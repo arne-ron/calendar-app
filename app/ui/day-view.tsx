@@ -3,7 +3,6 @@ import {EventStack} from "@/app/ui/event-stack";
 
 export function DayView({
     title,
-    className,
 }: {
     title: string;
     className?: string;

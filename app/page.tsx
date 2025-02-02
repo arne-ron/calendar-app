@@ -1,5 +1,4 @@
 import Image from "next/image";
-import {DayView} from "@/app/ui/day-view";
 
 
 export default function Home() {
