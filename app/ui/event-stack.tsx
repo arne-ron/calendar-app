@@ -8,8 +8,7 @@ export async function EventStack() {
 
     return (
         <div className={"flex flex-col items-start"}>
-            {events?.map((event: Event) => {
-                    console.log(event);
+            {events?.sort((a,b) => b.date - a.date).map((event: Event) => {
                     return <EventBlock event={event} key={event.id}/>;
                 }
             )}
