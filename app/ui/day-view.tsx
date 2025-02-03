@@ -8,7 +8,7 @@ export function DayView({
     className?: string;
 }) {
     return (
-        <div className={"flex flex-col items-center"}>
+        <div className={"flex flex-col items-center grow"}>
         {/* H-Stack */}
             <p>{title}</p>
             {/*Title*/}

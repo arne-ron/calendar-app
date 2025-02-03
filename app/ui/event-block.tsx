@@ -1,4 +1,4 @@
-import { Event } from "@/app/data";
+import { Event } from "@/app/definitions";
 
 export function EventBlock({event} : {event: Event}) {
     return <div className='flex flex-col bg-blue-500 rounded w-full h-20 p-1.5'> {/* w-full || flex-1 || flex-grow */}
