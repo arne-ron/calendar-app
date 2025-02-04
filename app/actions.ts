@@ -3,7 +3,6 @@
 
 
 import postgres from 'postgres';
-import { redirect } from "next/navigation";
 import { revalidatePath } from 'next/cache';
 import { EditEvent } from './definitions';
 
