@@ -20,7 +20,7 @@ export const EventSchema = z.object({
     }),
     date: z.coerce.date({
         required_error: "Date is required",
-        invalid_type_error: "Date must be a of format ...", //  TODO insert right date formating
+        invalid_type_error: "Date must be a of format ...", //  TODO check that all those messages get displayed correctly
     }), // use 'z.string().datetime()' (ISO 8601) od 'z.string.date()' as a possible alternative
     location: z.string().nonempty().nullable().catch(null),
     duration: z.coerce.number({

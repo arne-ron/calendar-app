@@ -21,3 +21,18 @@ export async function fetchEvents() {
         throw new Error('Failed to fetch events.');
     }
 }
+
+
+// Returns the event assigned the given id from the database
+export async function fetchEventById(id: string) {
+    try {
+        return (await sql<Event[]>`
+            SELECT *
+            FROM "calendar-entries"
+            WHERE id = ${id}
+        `)[0];
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch event.');
+    }
+}
