@@ -1,16 +1,18 @@
+// Element that handles and displays inputs for editing a new event
 'use client'
 
-
-import { createEvent, State} from "@/app/actions";
+import { editEvent, State } from "@/app/actions";
+import { Event, EditEvent } from "@/app/definitions";
+import { firstToUpper, mapZodToInputValueString } from "@/app/ui/utils";
 import { useActionState } from "react";
-import { EditEvent } from "@/app/definitions";
-import {firstToUpper, mapZodToInputValueString} from "@/app/ui/utils";
+import {redirect} from "next/navigation";
+import Link from "next/link";
 
 
-// Element that handles and displays inputs for creating a new event
-export function CreateEventForm() {
+export function EditEventForm({event}: {event: Event}) {
     const initialState: State = { message: null, errors: {} }
-    const [state, formAction] = useActionState(createEvent, initialState)
+    const editEventId = editEvent.bind(null, event.id);
+    const [state, formAction] = useActionState(editEventId, initialState)
     return (
         <form action={formAction}>
             <div className='flex flex-col gap-2 rounded bg-gray-100 p-2.5'>
@@ -27,6 +29,7 @@ export function CreateEventForm() {
                                 id={field}
                                 name={field}
                                 placeholder={'Enter the ' + field}
+                                defaultValue={event[field as keyof Event]?.toString()}
                                 type={mapZodToInputValueString(type)}
                                 className='rounded-md border border-gray-200 py-1 pl-2 text-sm'
                                 aria-describedby={field + '-error'}
@@ -42,7 +45,11 @@ export function CreateEventForm() {
                         </div>
                     );
                 })}
-                <button className='text-blue-500 hover:text-blue-700 rounded-full bg-white hover:bg-white/60' type='submit'>Create</button>
+                <div className='flex flex-row gap-2'>
+                    <button className='text-blue-500 hover:text-blue-700 w-24 rounded-md bg-white hover:bg-white/60' type='submit'>Save</button>
+                    <button className='text-black hover:text-gray-700 w-24 rounded-md bg-white hover:bg-white/60' type='reset'>Reset</button>
+                    <Link className='text-black hover:text-gray-700 w-24 rounded-md bg-white hover:bg-white/60' href='/calendar'>Cancel</Link>
+                </div>
             </div>
         </form>
     )
