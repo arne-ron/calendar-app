@@ -5,7 +5,6 @@ import { editEvent, State } from "@/app/actions";
 import { Event, EditEvent } from "@/app/definitions";
 import { firstToUpper, mapZodToInputValueString } from "@/app/ui/utils";
 import { useActionState } from "react";
-import {redirect} from "next/navigation";
 import Link from "next/link";
 
 
