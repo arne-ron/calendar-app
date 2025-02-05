@@ -5,7 +5,7 @@
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { EditEvent } from './definitions';
-import {redirect} from "next/navigation";
+import { redirect } from "next/navigation";
 
 
 // Shortcut to our PostgreSQL database
