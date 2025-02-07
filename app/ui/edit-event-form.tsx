@@ -1,6 +1,7 @@
 // Element that handles and displays inputs for editing a new event
 'use client'
 
+
 import { editEvent, State } from "@/app/actions";
 import { Event, EditEvent } from "@/app/definitions";
 import { firstToUpper, mapZodToInputValueString, mapEventToDefaultValue } from "@/app/ui/utils";

@@ -6,7 +6,7 @@ export type Event = {
     title: string;
     date: number;
     location?: string;
-    duration?: bigint;
+    duration?: number;
     notes?: string;
     link?: string;
     tags: string[];
