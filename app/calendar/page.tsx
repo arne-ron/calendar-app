@@ -40,17 +40,16 @@ export default function Page() {
                 </div>
             </main>
             <aside className='flex flex-col shrink-0 bg-gray-200 p-2 w-60 h-full'>
+                <p className='self-end text-xs bg-gray-300 aspect-square rounded-full p-auto'>X</p>
                 <h1 className='text-lg mb-2'>My Event</h1>
-
-
                 <div className='grid grid-cols-[auto_1fr] gap-x-2 gap-y-1.5 odd:*:text-gray-500'>
-                    <p>Start</p>
+                    <p>From</p>
                     <div className='bg-white rounded w-full px-1.5'>
-                        <p>1pm</p>
+                        <p>13:00</p>
                     </div>
-                    <p>End</p>
+                    <p>To</p>
                     <div className='bg-white rounded w-full px-1.5'>
-                        <p>5pm</p>
+                        <p>17:00</p>
                     </div>
                     <p>Duration</p>
                     <div className='bg-white rounded w-full px-1.5'>
@@ -72,7 +71,7 @@ export default function Page() {
                                 className='group flex flex-row gap-1 grow-0 items-center rounded-full bg-gray-100 w-fit py-1 px-2'
                             >
                                 <div className='rounded-full bg-red-400 group-even:bg-blue-400 w-3 h-3'></div>
-                                <p className='text-sm'>{text}</p>
+                                <p className='text-sm text-gray-600'>{text}</p>
                             </div>
                         ))
                         }
