@@ -27,8 +27,8 @@ export function TimeframeBar() {
                      className={clsx(
                          'px-1 rounded-md',
                          {
-                             'bg-white': view === timeframe,
-                             'hover:bg-gray-100': view !== timeframe,
+                             'bg-white': view === timeframe || (!view && timeframe === 'week'),
+                             'hover:bg-gray-100': !(view === timeframe || (!view && timeframe === 'week')),
                          }
                      )}
                      href={createPageURL(timeframe)}
