@@ -1,9 +1,20 @@
-import {DayView} from "@/app/ui/day-view";
+import {CalendarView} from "@/app/ui/calendar-view";
+import {TimeframeBar} from "@/app/ui/timeframe-bar";
+import {Searchbar} from "@/app/ui/searchbar";
 
 
-export default function Page() {
+export default async function Page(
+    props: {
+        searchParams?: Promise<{
+            view?: string
+        }>
+    }
+) {
+    const searchParams = await props.searchParams
+    const view = searchParams?.view
+
     return (
-        <div className='flex flex-row h-full bg-gray-100' >
+        <div className='flex flex-row h-full bg-gray-100'>
             <aside className='flex flex-col flex-shrink-0 w-60 h-full bg-gray-200'>
                 {/* Tab Bar */}
                 <div className='flex flex-row p-1.5 gap-1 items-start'>
@@ -18,29 +29,31 @@ export default function Page() {
                 {/* Calendars listed */}
                 <div className='flex flex-col m-2 gap-1 h-full items-start'>
                     <button className='flex text-blue-600 hover:text-blue-800 hover:underline'>Select all</button>
-                    {[1,2,3,4,5].map((item, index) => (
+                    {[1, 2, 3, 4, 5].map((item, index) => (
                         <button key={index} className='group flex flex-row items-center gap-1' value={item}>
-                            <div className='w-4 h-4 rounded-md group-even:bg-blue-400 group-odd:bg-blue-600 border-gray-400 group-[:nth-of-type(3)]:bg-transparent group-[:nth-of-type(3)]:border-2'></div>
+                            <div
+                                className='w-4 h-4 rounded-md group-even:bg-blue-400 group-odd:bg-blue-600 border-gray-400 group-[:nth-of-type(3)]:bg-transparent group-[:nth-of-type(3)]:border-2'></div>
                             <p className='group-[:nth-of-type(3)]:text-gray-500'>{'Calendar ' + item}</p>
                         </button>
                     ))}
                 </div>
             </aside>
             <main className='flex flex-col grow shrink-0 items-center'>
-                <div className='flex flex-row gap-1 w-fit rounded-lg bg-gray-200 p-1 m-1'>
-                    <button className='px-1 rounded-md hover:bg-gray-100'>Day</button>
-                    <button className='px-1 rounded-md bg-white hover:bg-gray-100'>Week</button>
-                    <button className='px-1 rounded-md hover:bg-gray-100'>Month</button>
-                    <button className='px-1 rounded-md hover:bg-gray-100'>Year</button>
-                </div>
-                <div className='flex flex-row h-full'> {/* Multiple days*/}
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) =>
-                        <DayView title={day} key={day}/>
-                    )}
-                </div>
+                <header className='flex flex-row justify-between items-center px-6 w-full'>
+                    {/* Spacer */}
+                    <div className='w-36'></div> {/* TODO: This might not be the optimal solution */}
+                    <TimeframeBar />
+                    <Searchbar />
+                </header>
+                <CalendarView view={view} query='empty query'/>
             </main>
             <aside className='flex flex-col shrink-0 bg-gray-200 p-2 w-60 h-full'>
-                <p className='self-end text-xs bg-gray-300 aspect-square rounded-full p-auto'>X</p>
+                {/* Top Button Bar */}
+                <div className='self-end flex mt-1 flex-row gap-1'>
+                    <button className='text-sm text-blue-600 bg-gray-300 rounded-full px-1.5 select-none'>Edit</button>
+                    <button className='text-xs bg-gray-300 rounded-full px-1.5 select-none'>x</button>
+                    {/* TODO: replace with icon */}
+                </div>
                 <h1 className='text-lg mb-2'>My Event</h1>
                 <div className='grid grid-cols-[auto_1fr] gap-x-2 gap-y-1.5 odd:*:text-gray-500'>
                     <p>From</p>
