@@ -2,7 +2,7 @@ import {DayView, DayViewSkeleton } from "@/app/ui/timeframes/day-view";
 import { notFound } from "next/navigation";
 import { WeekView, WeekViewSkeleton } from "@/app/ui/timeframes/week-view";
 import { MonthViewSkeleton } from "@/app/ui/timeframes/month-view";
-import {YearView, YearViewSkeleton} from "@/app/ui/timeframes/year-view";
+import { YearViewSkeleton} from "@/app/ui/timeframes/year-view";
 import { Suspense } from "react";
 
 
