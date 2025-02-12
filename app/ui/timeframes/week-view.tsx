@@ -1,12 +1,15 @@
+
+
 import {DayView} from "@/app/ui/day-view";
 
 
-export function WeekView() {
+export async function WeekView() {
     const arr: number[] = []
     for (let i = 0; i < 4; i++) {
         arr.push(i)
     }
 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return (
         <div className='flex flex-col m-0'>
@@ -16,7 +19,8 @@ export function WeekView() {
                         <p>{day}</p>
                         <p className='px-2 group-[:nth-of-type(3)]:bg-red-500 rounded-full group-[:nth-of-type(3)]:text-white '>{index}</p>
                         {arr.map((index) =>
-                            <div key={index} className='bg-gray-300 group-even:bg-gray-200 rounded-xl h-20 w-full'></div>
+                            <div key={index}
+                                 className='bg-gray-300 group-even:bg-gray-200 rounded-xl h-20 w-full'></div>
                         )}
                     </div>
                 )}

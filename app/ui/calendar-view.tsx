@@ -1,12 +1,12 @@
-import {DayView, DayViewSkeleton} from "@/app/ui/timeframes/day-view";
+import {DayView, DayViewSkeleton } from "@/app/ui/timeframes/day-view";
 import { notFound } from "next/navigation";
-import {WeekView, WeekViewSkeleton} from "@/app/ui/timeframes/week-view";
-import { MonthView } from "@/app/ui/timeframes/month-view";
-import { YearView } from "@/app/ui/timeframes/year-view";
-import {Suspense} from "react";
+import { WeekView, WeekViewSkeleton } from "@/app/ui/timeframes/week-view";
+import { MonthViewSkeleton } from "@/app/ui/timeframes/month-view";
+import {YearView, YearViewSkeleton} from "@/app/ui/timeframes/year-view";
+import { Suspense } from "react";
 
 
-export function CalendarView({ view }: {view: string | undefined; query: string}) {
+export function CalendarView({ view }: {view: string | undefined}) {
     switch (view) {
         case 'day':
             return (
@@ -22,9 +22,17 @@ export function CalendarView({ view }: {view: string | undefined; query: string}
                 </Suspense>
             )
         case 'month':
-            return (<MonthView />)
+            return (
+                <Suspense fallback={<MonthViewSkeleton />} >
+                    <MonthViewSkeleton />
+                </Suspense>
+            )
         case 'year':
-            return (<YearView />)
+            return (
+                <Suspense fallback={<YearViewSkeleton />} >
+                    <YearViewSkeleton />
+                </Suspense>
+            )
     }
 
     notFound()
