@@ -52,3 +52,14 @@ export async function fetchEventById(id: string) {
         throw new Error('Failed to fetch event.');
     }
 }
+
+
+/**
+ * Artificially delays the caller <br>
+ * i.e. used to test <Suspense> and Skeletons
+ *
+ * @param time delay in ms
+ */
+export async function delay(time: number) {
+    await new Promise(resolve => setTimeout(resolve, time));
+}

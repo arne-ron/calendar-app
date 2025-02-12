@@ -1,6 +1,5 @@
-
-
 import {DayView} from "@/app/ui/day-view";
+import {delay} from "@/app/data";
 
 
 export async function WeekView() {
@@ -9,7 +8,7 @@ export async function WeekView() {
         arr.push(i)
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await delay(2000);
 
     return (
         <div className='flex flex-col m-0'>
