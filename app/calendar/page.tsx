@@ -45,7 +45,7 @@ export default async function Page(
                     <TimeframeBar />
                     <Searchbar />
                 </header>
-                <CalendarView view={view} query='empty query'/>
+                <CalendarView view={view}/>
             </main>
             <aside className='flex flex-col shrink-0 bg-gray-200 p-2 w-60 h-full'>
                 {/* Top Button Bar */}
