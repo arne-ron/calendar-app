@@ -1,6 +1,7 @@
 import {CalendarView} from "@/app/ui/calendar-view";
 import {TimeframeBar} from "@/app/ui/timeframe-bar";
 import {Searchbar} from "@/app/ui/searchbar";
+import Link from "next/link";
 
 
 export default async function Page(
@@ -27,7 +28,7 @@ export default async function Page(
                 </div>
                 <div className='bg-gray-300 h-0.5'></div>
                 {/* Calendars listed */}
-                <div className='flex flex-col m-2 gap-1 h-full items-start'>
+                <div className='flex flex-col m-2 gap-1 items-start'>
                     <button className='flex text-blue-600 hover:text-blue-800 hover:underline'>Select all</button>
                     {[1, 2, 3, 4, 5].map((item, index) => (
                         <button key={index} className='group flex flex-row items-center gap-1' value={item}>
@@ -37,13 +38,19 @@ export default async function Page(
                         </button>
                     ))}
                 </div>
+                <Link href={'/calendar/calendar/create'} className='flex bg-gray-100 hover:bg-gray-100/60 rounded-full mx-2.5 w-12 text-gray-400 justify-center'>+</Link>
             </aside>
             <main className='flex flex-col grow shrink-0 items-center'>
                 <header className='flex flex-row justify-between items-center px-6 w-full'>
                     {/* Spacer */}
                     <div className='w-36'></div> {/* TODO: This might not be the optimal solution */}
                     <TimeframeBar />
-                    <Searchbar />
+                    <div className='flex flex-row gap-1'>
+                        <Link href='/calendar/event/create' className='flex  bg-white rounded-full justify-center items-center w-7'>
+                            <p className='text-gray-400'>+</p>
+                        </Link>
+                        <Searchbar />
+                    </div>
                 </header>
                 <CalendarView view={view}/>
             </main>

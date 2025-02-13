@@ -8,10 +8,10 @@ export async function WeekView() {
         arr.push(i)
     }
 
-    await delay(2000);
+    await delay(1000);
 
     return (
-        <div className='flex flex-col m-0'>
+        <div className='flex flex-col'>
             <div className='flex flex-row gap-1 w-full'>
                 {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) =>
                     <div key={day} className='group flex flex-col w-full gap-1 items-center'>
