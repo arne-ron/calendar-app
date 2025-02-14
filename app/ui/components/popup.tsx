@@ -35,7 +35,7 @@ export function Popup(
     }: {
         ref: RefObject<HTMLDialogElement | null>,
         backdrop?: boolean,
-        className: string | undefined,
+        className?: string,
         children?: ReactNode[]
     }
 ) {
