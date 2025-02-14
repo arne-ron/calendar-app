@@ -9,6 +9,17 @@ import {ReactNode, RefObject, useEffect} from "react";
  * The children get added to an area in contained in the popup.
  * Styling `className` affects the `<div>` containing the children
  *
+ * ```
+ * const ref = useRef<HTMLDialogElement>(null);
+ *
+ * <div>
+ *   <button action={() => ref.current?.show()}>Show Popup</button>
+ *   <Popup ref={ref}>MyPopup</Popup>
+ * </div>
+ * ```
+ *
+ *
+ *
  * @param ref reference the popup for showing it
  * @param backdrop if `true`, clicking outside the popup closes it
  * @param className tailwind styling for the `<div>` containing the children
