@@ -1,4 +1,4 @@
-import {CreateCalendarForm} from "@/app/ui/create-calendar-form";
+import {CreateCalendarForm} from "@/app/ui/forms/create-calendar-form";
 
 export default function Page() {
     return (

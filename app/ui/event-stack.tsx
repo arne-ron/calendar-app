@@ -1,5 +1,5 @@
 import { Event } from '@/app/definitions'
-import { EventBlock } from "@/app/ui/event-block";
+import { EventBlock } from "@/app/ui/components/event-block";
 import { fetchEvents } from "@/app/data";
 
 

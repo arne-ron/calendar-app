@@ -15,6 +15,6 @@ export function CreateCalendarForm() {
                     <Link href='/calendar' className='bg-white hover:bg-white/60 rounded-full px-1'>Cancel</Link>
                 </div>
             </div>
-        </form>
+        </form> // TODO: Research and maybe replace all (html's) <form> with next.js' <Form>
     )
 }

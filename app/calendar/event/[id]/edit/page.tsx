@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { fetchEventById } from "@/app/data";
-import { EditEventForm } from "@/app/ui/edit-event-form";
+import { EditEventForm } from "@/app/ui/forms/edit-event-form";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;

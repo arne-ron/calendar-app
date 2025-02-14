@@ -7,6 +7,8 @@ import { Suspense } from "react";
 
 
 export async function CalendarView({ view }: {view: string | undefined}) {
+    if (view && view !== 'day' && view !== 'week' && view !== 'month' && view !== 'year') notFound()
+
 
     return (
       <div className='flex h-full w-full'>
@@ -33,35 +35,4 @@ export async function CalendarView({ view }: {view: string | undefined}) {
 
       </div>
     );
-
-    // The old code
-    switch (view) {
-        case 'day':
-            return (
-                <Suspense fallback={<DayViewSkeleton/>}>
-                    <DayView />
-                </Suspense>
-            )
-        case undefined:
-        case 'week':
-            return (
-                <Suspense fallback={<WeekViewSkeleton />} >
-                    <WeekView />
-                </Suspense>
-            )
-        case 'month':
-            return (
-                <Suspense fallback={<MonthViewSkeleton />} >
-                    <MonthViewSkeleton />
-                </Suspense>
-            )
-        case 'year':
-            return (
-                <Suspense fallback={<YearViewSkeleton />} >
-                    <YearViewSkeleton />
-                </Suspense>
-            )
-    }
-
-    notFound()
 }

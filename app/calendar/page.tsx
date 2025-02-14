@@ -1,6 +1,6 @@
 import {CalendarView} from "@/app/ui/calendar-view";
-import {TimeframeBar} from "@/app/ui/timeframe-bar";
-import {Searchbar} from "@/app/ui/searchbar";
+import {TimeframeBar} from "@/app/ui/components/timeframe-bar";
+import {Searchbar} from "@/app/ui/components/searchbar";
 import Link from "next/link";
 
 

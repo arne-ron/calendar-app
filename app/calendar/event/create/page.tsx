@@ -1,4 +1,4 @@
-import {CreateEventForm} from "@/app/ui/create-event-form";
+import {CreateEventForm} from "@/app/ui/forms/create-event-form";
 
 
 export default function Page() {
