@@ -15,12 +15,22 @@ export default function Page() {
             <TagBlock text='MyTag'/>
             <TagBlock text='or' />
             <TagBlock text='and'/>
+            <TagBlock text='and'>
+                <div className='bg-green-100'>
+                    <p>Grrr</p>
+                </div>
+            </TagBlock>
             <TagBlock text='or'>
                 <TagBlock text='and'>
-                    {null}
-                    <TagBlock text='Test2' color='bg-red-400' />
+                    <p>mm</p>
+                    {/*<TagBlock text='Test2' color='bg-red-400' />*/}
                 </TagBlock>
                 <TagBlock text='Test2' color='bg-gray-400' />
+            </TagBlock>
+            <TagBlock text='or' color='bg-gray-400'>
+                <TagBlock text={'or'}>
+                    <TagBlock text={'Y'} key='Y'/>
+                </TagBlock>
             </TagBlock>
 
         </div>
