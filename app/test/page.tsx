@@ -1,8 +1,7 @@
 'use client'
 
 
-import { useRef } from "react";
-import { Popup } from "@/app/ui/components/popup";
+import { TagBlock } from "@/app/ui/components/tag-block";
 
 
 /**
@@ -11,20 +10,19 @@ import { Popup } from "@/app/ui/components/popup";
  * @constructor
  */
 export default function Page() {
-    const ref = useRef<HTMLDialogElement>(null);
-
     return (
-        <div>
-            <button onClick={() => ref.current?.show()}>
-                Show Pop-Up
-            </button>
-            <Popup ref={ref} className='p-1'>
-                <p>Heyy</p>
-                <p>This is a test popup</p>
-            </Popup>
-            <p>
-                Just some sample text
-            </p>
+        <div className='flex flex-col gap-2 p-2'>
+            <TagBlock text='MyTag'/>
+            <TagBlock text='or' />
+            <TagBlock text='and'/>
+            <TagBlock text='or'>
+                <TagBlock text='and'>
+                    {null}
+                    <TagBlock text='Test2' color='bg-red-400' />
+                </TagBlock>
+                <TagBlock text='Test2' color='bg-gray-400' />
+            </TagBlock>
+
         </div>
     )
 }
