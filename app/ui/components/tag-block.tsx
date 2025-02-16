@@ -36,15 +36,6 @@ export function TagBlock(
         </button>
     )
 
-    // If it's simple the children stay null,
-    // otherwise extract the children from the props and initialise the rest with the createTags
-    let child1, child2: ReactNode | null;
-    if (!simple) {
-        if (children) {
-            [child1, child2] = children;
-        }
-    }
-
 
     return (
         <div
