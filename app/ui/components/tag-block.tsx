@@ -1,42 +1,67 @@
-import React, {ReactNode, useEffect, useState} from "react";
+import React, {
+    DetailedHTMLProps,
+    HTMLAttributes,
+    ReactElement,
+    useEffect,
+    useState
+} from "react";
+
+
+export interface TagBlockProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    text: string,
+    color?: string,
+    children?: ReactElement<TagBlockProps>[] | ReactElement<TagBlockProps>,
+}
 
 
 export function TagBlock(
     {
         text,
         color = 'bg-green-500',
-        children,
-    }: {
-        text: 'and' | 'or' | string,
-        color?: string,
-        children?: ReactNode,
-    }
+        children
+    }: TagBlockProps
 ) {
-    const [tags, setTags] = useState<ReactNode[]>([]);
-    const [tagsNew, setTagsNew] = useState<{text: string, color: string, tags: object}[]>([]);
 
+    const [tags, setTags] = useState<{text: string, color: string, tags: object}[]>([]);
 
-    const addTag = (tag: ReactNode) => {
-        setTags((prevTags) => [...prevTags, tag]);
-        console.log('test' + text)
+    const addTag = (text: string, color: string, tags: object) => {
+        setTags((prevTags) => [...prevTags, {text, color, tags}]);
     }
-    const addTagNew = (text: string, color: string, tags: object) => {
-        setTagsNew((prevTags) => [...prevTags, {text, color, tags}]);
-        console.log('test' + text)
-    }
-
 
     const childrenArr = React.Children.toArray(children);
 
-    // Only calls this method when children variable is updated.
-    // This prevents infinite recursion through: render -> change tags -> causes rerender -> change tags -> causes rerender...
+
+    function tagBlockToObject(block: ReactElement<TagBlockProps>, depth: number): {text: string, color: string, tags: object} {
+
+        console.log('Entering function at depth ' + depth);
+        if (!block.props) return {text, color, tags: {}}
+        const children = React.Children.toArray(block.props?.children ?? []) as ReactElement<TagBlockProps>[]
+
+
+        const tags = (children.length != 0) ? children.map((e) => tagBlockToObject(e, depth + 1)) : {}
+
+        return {
+            text: block.props.text as string,
+            color: block.props.color as string,
+            tags: tags,
+
+        }
+    }
+
+
     useEffect(() => {
         childrenArr.forEach((child) => {
-            // Ensure child is a React element and has a unique key
-            if (React.isValidElement(child)) {
-                if (!tags.some((e) => React.isValidElement(e) && e.text === child.text)) {
-                    addTag(child);
+            // @ts-expect-error type of props is unknown
+            if (React.isValidElement(child) && "text" in child.props) {
+                if (child.type === TagBlock) {
+                // @ts-expect-error type of props is unknown
+                    if (!tags.some((e) => e.text === child.props.text)) {
+                        // @ts-expect-error grrr errors leave me TODO there shouldn't be as many ts-ignores here
+                        addTag(tagBlockToObject(child, 0));
+                    }
                 }
+            } else {
+                console.error("A <TagBlock/> element should only ever have other <TagBlock/> elements as it's children");
             }
         });
     }, [children]);
@@ -55,20 +80,20 @@ export function TagBlock(
             ]}
             {tags.length == 0 && !simple && [ // complex: Leading CreateKey
                 <CreateTag key={'leading_createTag'} onClick={() =>
-                    addTag(<TagBlock text='Heyy' key={'Heyy' + tags.length}/>)}
+                    addTag('Heyy', 'bg-green-500', {})}
                 />,
             ]}
-            {tags.flatMap((tag: ReactNode, i: number) => { // Mapping all tags, connected by text
-                console.log(tag);
+            {tags.flatMap((tag, i: number) => { // Mapping all tags, connected by text
+                console.log(tag, i)
                 return [
                     i != 0 && <p key={'and_' + i}>{text}</p>,
-                    tag
+                    <TagBlock key={i} text={tag.text ?? 'Heyy'} color={tag.color ?? 'bg-green-500'}/>
                 ]
             })}
             {!simple && [ // always have trailing createTag if not complex
                 <p key={'trailing_text'}>{text ?? '"empty"'}</p>,
                 <CreateTag key={'leading_createTag'} onClick={() =>
-                    addTag(<TagBlock text='Heyy' key={'Heyy' + tags.length}/>)}
+                    addTag('Heyy', 'bg-green-500', {})}
                 />
             ]}
         </div>
