@@ -18,7 +18,6 @@ export default function Page() {
             <TagBlock text='and'></TagBlock>
             <TagBlock text='or'>
                 <TagBlock text='and'>
-                    {/*<p>mm</p>*/}
                     <TagBlock text='Test2' color='bg-red-400' />
                 </TagBlock>
                 <TagBlock text='Test2' color='bg-gray-400' />
@@ -30,5 +29,6 @@ export default function Page() {
             </TagBlock>
 
         </div>
+        // <p>Nothing being tested at the moment :)</p>
     )
 }
