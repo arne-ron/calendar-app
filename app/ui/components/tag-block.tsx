@@ -3,7 +3,7 @@ import React, { ReactElement, useState} from "react";
 
 // maybe wants to 'extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>' in the future
 export interface TagBlockProps {
-    text: string | 'or' | 'and',
+    initial_text: string | 'or' | 'and' | 'empty',
     color?: string,
     children?: ReactElement<TagBlockProps>[] | ReactElement<TagBlockProps>,
 }
@@ -15,19 +15,32 @@ export interface TagBlockProps {
  * Simple tags consist of a colored swatch and the text, while complex tags of `or` or `and` create a list of sub-tags.
  * These contain two `CreateTag` buttons if empty, or one trailing `CreateTag` button otherwise.
  *
- * @param text defines the type of tag block. `or` or `and` create a complex block whereas any `string` denotes the tags name.
+ * @param initial_text defines the type of tag block. `or` or `and` create a complex block whereas any `string` denotes the tags name.
  * @param color Denotes the color of the swatch as tailwind-style `bg-[]-[]`. Only applicable to simple tags. Defaults to `bg-green-500`.
  * @param children the children of the
  */
 export function TagBlock(
     {
-        text,
+        initial_text,
         color = 'bg-green-500',
         children
     }: TagBlockProps
 ) {
+    const [simple, setSimple] = useState<boolean>(false)
+    const [text, setText] = useState(initial_text)
 
-    const simple: boolean = text !== 'and' && text !== 'or';
+    React.useEffect(
+        () => {
+            initialize()
+        }
+        )
+    function initialize() {
+        if (text === '') setText('New Tag')
+        setSimple(text !== 'and' && text !== 'or' && text !== 'empty');
+        console.log('Initialising...', text)
+    }
+
+
     const [tags, setTags] = useState<{text: string, color: string | undefined, tags: object[] }[]>([]);
 
     const addTag = (text: string, color: string | undefined, tags: object[]) => {
@@ -45,7 +58,7 @@ export function TagBlock(
      */
     function tagBlockToObject(block: ReactElement<TagBlockProps>): {text: string, color: string | undefined, tags: object[]} {
 
-        if (!block.props.text) {
+        if (!block.props.initial_text) {
             throw new Error(`A <TagBlock/> may only contain other <TagBlock/>. Found <${block.type}> instead.`);
         }
 
@@ -55,7 +68,7 @@ export function TagBlock(
         const tags = (children.length != 0) ? children.map((e) => tagBlockToObject(e)) : []
 
         return {
-            text: block.props.text,
+            text: block.props.initial_text,
             color: block.props.color,
             tags: tags,
 
@@ -70,7 +83,7 @@ export function TagBlock(
 
         if (React.isValidElement<TagBlockProps>(child)) {
                 // Check that the tag is not already in tags
-                if (!tags.some((e) => e.text === child.props.text)) {
+                if (!tags.some((e) => e.text === child.props.initial_text)) {
                     const asTag = tagBlockToObject(child);
                     addTag(asTag.text, asTag.color, asTag.tags);
                 }
@@ -82,32 +95,39 @@ export function TagBlock(
 
     return (
         <div
-            className={'flex flex-wrap flex-row gap-1 rounded-3xl px-2 py-1 items-center w-fit bg-blue-400/20'}
+            className={'flex flex-wrap flex-row gap-1 gap-y-1.5 rounded-2xl px-1.5 py-1 items-center w-fit bg-blue-400/20 text-sm'}
         >
             {simple && [ // simple: color swatch and text
-                <div key='simple_color_swadge' className={`h-4 w-4 rounded-full ${color} ml-1`}></div>,
+                <div key='simple_color_swadge' className={`h-3 w-3 rounded-full ${color} ml-1`}></div>,
                 <p key='simple_text'>{text}</p>
             ]}
-            {tags.length == 0 && !simple && [ // complex: Leading CreateKey
+            {tags.length == 0 && !simple && text !== 'empty' && [ // complex: Leading CreateKey
                 <CreateTag key={'leading_createTag'} onSubmit={(name: string) =>
                     addTag(name, 'bg-green-500', [])}
                 />,
             ]}
-            {tags.flatMap((tag, i: number) => { // Mapping all tags, connected by text
+            {text !== 'empty' && tags.flatMap((tag, i: number) => { // Mapping all tags, connected by text
                 console.log(tag, i)
                 console.log(tags)
                 const new_text: string = tag.text
                 return [
                     i != 0 && <p key={'and_' + i}>{text}</p>,
-                    <TagBlock key={i} text={new_text}/>
+                    <TagBlock key={i} initial_text={new_text}/>
                 ]
             })}
-            {!simple && [ // always have trailing createTag if not complex
+            {!simple && text !== 'empty' && [ // always have trailing createTag if not complex
                 <p key={'trailing_text'}>{text ?? '"empty"'}</p>,
                 <CreateTag key={'leading_createTag'} onSubmit={(name: string) =>
                     addTag(name, 'bg-green-500', [])}
                 />
             ]}
+            {text === 'empty' &&
+                <CreateTag onSubmit={(e) => {
+                    setText(e);
+                    initialize();
+                    console.log(simple)
+                }}/>
+            }
         </div>
     )
 }
@@ -141,7 +161,7 @@ function CreateTag(
                 setOpened(false);
                 e.currentTarget.reset()
             }}
-            className='flex bg-white rounded-full min-w-20 h-8 justify-center items-center'
+            className='flex bg-white rounded-full min-w-20 h-7 justify-center items-center'
         >
             {opened && [
                 <input

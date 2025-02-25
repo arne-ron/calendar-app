@@ -2,7 +2,7 @@
 
 
 import postgres from "postgres";
-import { Event } from "@/app/definitions";
+import { Event, Calendar } from "@/app/definitions";
 
 
 // Shortcut to our PostgreSQL database
@@ -39,17 +39,28 @@ export async function fetchEventById(id: string) {
         `;
 
         const parts = (res[0].duration as unknown as string).split(':').map(Number);
-        const totalSeconds = parts[0] * 60 + parts[1] * 1 + parts[2] * 1 / 60;
+        const totalSeconds = parts[0] * 60 + parts[1] + parts[2] / 60;
 
-        const ret = {
+        return {
             ...res[0],
             duration: totalSeconds
         };
-
-        return ret;
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch event.');
+    }
+}
+
+
+export async function fetchCalendars() {
+    try {
+        return await sql<Calendar[]>`
+            SELECT *
+            FROM "calendar-groups"
+        `;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch calendar groups.');
     }
 }
 

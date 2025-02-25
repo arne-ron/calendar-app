@@ -1,6 +1,7 @@
 // The definition of an event object (can this be replaced with the zod thing?)
 import { z } from "zod";
 
+
 export type Event = {
     id: number;
     title: string;
@@ -57,3 +58,11 @@ export const EventSchema = z.object({
 
 // A dependent schema of EventSchema that omits the id
 export const EditEvent = EventSchema.omit({ id: true})
+
+
+export type Calendar = {
+    id: number;
+    name: string;
+    color: string;
+    tags: string;
+}
