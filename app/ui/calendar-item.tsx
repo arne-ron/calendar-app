@@ -1,9 +1,10 @@
 'use client'
 
 
-import {useState} from "react";
-import {TagBlock} from "@/app/ui/components/tag-block";
+import React, {createRef, useState} from "react";
+import {TagBlock, TagBlockElement} from "@/app/ui/components/tag-block";
 import clsx from "clsx";
+import {SaveCalendarButton} from "@/app/ui/components/save-calendar-button";
 
 
 /**
@@ -23,6 +24,13 @@ export function CalendarItem(
     const [selected, setSelected] = useState<boolean>(false);
     const [active, setActive] = useState<boolean>(false);
 
+    const initialTag = createRef<TagBlockElement>();
+
+
+    React.useEffect(() => {
+        console.log("initialTag: ", initialTag)
+    }, [initialTag])
+
     return (
         <div
             className={clsx(
@@ -34,17 +42,13 @@ export function CalendarItem(
             <div className='flex items-center gap-1'>
                 {/* Colored selection rectangle */}
                 <button
-                    className={clsx(
-                        'w-4 h-4 rounded-md border-2',
-                        {'bg-transparent border-gray-400': !selected},
-                        {'bg-[color] border-blue-400': selected},
-                    )}
+                    className={'w-4 h-4 rounded-md border-2'}
                     style={selected ? { backgroundColor: color, borderColor: color } : { borderColor: color }}
                     onClick={() => setSelected(!selected)}
                 />
                 {/* Calendar name */}
                 <button
-                    className={clsx('group flex flex-row items-center gap-1', {'text-gray-600': !selected})}
+                    className={clsx('group flex flex-row items-center gap-1 grow', {'text-gray-600': !selected})}
                     onClick={(e) => {
                         e.currentTarget.focus();
                         setActive(!active);
@@ -52,10 +56,11 @@ export function CalendarItem(
                 >
                     {name}
                 </button>
+                {active && <SaveCalendarButton initialTag={initialTag}/>}
             </div>
             {/* Editing tags interface */}
             {active &&
-                <TagBlock initial_text='empty' />
+                <TagBlock ref={initialTag} initialText='empty' />
             }
         </div>
     )
