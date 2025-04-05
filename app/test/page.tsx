@@ -1,6 +1,3 @@
-'use client'
-
-
 /**
  * Exposes an url for WIP and testing purposes
  *
@@ -8,6 +5,8 @@
  */
 export default function Page() {
     return (
-        <p>Nothing being tested at the moment :)</p>
+        <p>Nothing is being tested atm</p>
     )
 }
+
+

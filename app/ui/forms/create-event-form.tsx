@@ -4,7 +4,7 @@
 import { createEvent, State} from "@/app/actions";
 import { useActionState } from "react";
 import { EditEvent } from "@/app/definitions";
-import {firstToUpper, mapZodToInputValueString} from "@/app/ui/utils";
+import {firstToUpper, mapZodToInputValueString} from "@/app/utils";
 import Link from "next/link";
 
 

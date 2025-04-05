@@ -5,9 +5,9 @@ import { z } from "zod";
 export type Event = {
     id: number;
     title: string;
-    date: number;
+    date: Date;
     location?: string;
-    duration?: number;
+    duration: string;
     notes?: string;
     link?: string;
     tags: string[];
