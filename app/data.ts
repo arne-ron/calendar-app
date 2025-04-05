@@ -1,7 +1,5 @@
 // ? Collection of functions that get run on other server side components
-
-
-import postgres from "postgres";
+import postgres, {RowList} from "postgres";
 import { Event, Calendar } from "@/app/definitions";
 
 
@@ -12,7 +10,7 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 /**
  * Returns all events in the database
  */
-export async function fetchEvents() {
+export async function fetchEvents(): Promise<RowList<Event[]>> {
     try {
         return await sql<Event[]>`
             SELECT *
@@ -30,7 +28,7 @@ export async function fetchEvents() {
  *
  * @param id the unique identifier for the event
  */
-export async function fetchEventById(id: string) {
+export async function fetchEventById(id: string): Promise<Event> {
     try {
         const res = await sql<Event[]>`
             SELECT *
@@ -43,7 +41,7 @@ export async function fetchEventById(id: string) {
 
         return {
             ...res[0],
-            duration: totalSeconds
+            duration: totalSeconds.toString()
         };
     } catch (error) {
         console.error('Database Error:', error);
@@ -52,7 +50,10 @@ export async function fetchEventById(id: string) {
 }
 
 
-export async function fetchCalendars() {
+/**
+ * Returns all calendars in the database
+ */
+export async function fetchCalendars(): Promise<RowList<Calendar[]>> {
     try {
         return await sql<Calendar[]>`
             SELECT *
