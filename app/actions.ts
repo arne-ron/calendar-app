@@ -144,3 +144,5 @@ export async function deleteEvent(id: number) {
     revalidatePath('/calendar');
     redirect('/calendar');
 }
+
+

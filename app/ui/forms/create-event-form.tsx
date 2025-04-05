@@ -4,7 +4,8 @@
 import { createEvent, State} from "@/app/actions";
 import { useActionState } from "react";
 import { EditEvent } from "@/app/definitions";
-import {firstToUpper, mapZodToInputValueString} from "@/app/ui/utils";
+import {firstToUpper, mapZodToInputValueString} from "@/app/utils";
+import Link from "next/link";
 
 
 // Element that handles and displays inputs for creating a new event
@@ -42,7 +43,10 @@ export function CreateEventForm() {
                         </div>
                     );
                 })}
-                <button className='text-blue-500 hover:text-blue-700 rounded-full bg-white hover:bg-white/60' type='submit'>Create</button>
+                <div className='flex flex-row gap-1'>
+                    <button className='text-blue-500 hover:text-blue-700 rounded-full bg-white hover:bg-white/60 px-1' type='submit'>Create</button>
+                    <Link href='/calendar' className='bg-white hover:bg-white/60 rounded-full px-1'>Cancel</Link>
+                </div>
             </div>
         </form>
     )

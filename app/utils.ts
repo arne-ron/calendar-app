@@ -43,3 +43,34 @@ export function mapEventToDefaultValue(event: Event, field: string) {
             return val?.toString();
     }
 }
+
+
+export function parseDurationFromString(value: string): number {
+    // TODO Implement this for durations longer than a day
+    let ret_val = 0
+    const arr = value.split(":").map(Number).reverse()
+    arr.forEach((val: number, i: number) => {
+        ret_val += val * (60)**i * 1000
+    })
+    return ret_val
+}
+
+
+export function getTimeInMillis(date: Date): number {
+    return date.getHours() * 3600000
+        + date.getMinutes() * 60000
+        + date.getSeconds() * 1000
+        + date.getMilliseconds();
+}
+
+
+/**
+ * Clamps the value of x between min and max and returns the result
+ *
+ * @param x the value to be clamped
+ * @param min Minimum value x can take
+ * @param max Maximum value x can take
+ */
+export function clamp(x: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, x));
+}

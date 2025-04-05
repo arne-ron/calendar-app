@@ -4,10 +4,10 @@
 
 import { editEvent, State } from "@/app/actions";
 import { Event, EditEvent } from "@/app/definitions";
-import { firstToUpper, mapZodToInputValueString, mapEventToDefaultValue } from "@/app/ui/utils";
+import { firstToUpper, mapZodToInputValueString, mapEventToDefaultValue } from "@/app/utils";
 import { useActionState } from "react";
 import Link from "next/link";
-import {DeleteEventForm} from "@/app/ui/delete-event-form";
+import {DeleteEventForm} from "@/app/ui/forms/delete-event-form";
 
 
 export function EditEventForm({event}: {event: Event}) {
