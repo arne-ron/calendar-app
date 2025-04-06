@@ -1,7 +1,9 @@
-// The definition of an event object (can this be replaced with the zod thing?)
+// TODO look at automatically getting these from an ORM
+
 import { z } from "zod";
 
 
+/** Describes an event as mirrored in the database */
 export type Event = {
     id: number;
     title: string;
@@ -13,7 +15,8 @@ export type Event = {
     tags: string[];
 }
 
-// The Schema describing an event object
+
+/** The Schema describing an event object */
 export const EventSchema = z.object({
     id: z.number(),
     title: z.string().trim().nonempty({
@@ -56,13 +59,24 @@ export const EventSchema = z.object({
         // TODO: empty string get parsed into [''] instead of []
 })
 
-// A dependent schema of EventSchema that omits the id
+
+/** A dependent schema of EventSchema that omits the id */
 export const EditEvent = EventSchema.omit({ id: true})
 
 
+/** Describes a calendar entry as mirrored in the database (without the user) */ // TODO look at uuids here
 export type Calendar = {
     id: number;
     name: string;
     color: string;
     tags: string;
+}
+
+
+/** Describes a user as mirrored in the database */
+export type User = {
+    id: string,
+    name: string;
+    email: string;
+    password: string;
 }

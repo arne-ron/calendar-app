@@ -22,7 +22,6 @@ export async function GeneralInformationPage() {
             <div className='flex flex-col m-2 gap-1 items-start'>
                 <button className='flex text-blue-600 hover:text-blue-800 hover:underline'>Select all</button>
                 {calendars.map((calendar_group, index) => {
-                    console.log(calendar_group);
                     return <CalendarItem key={index} name={calendar_group.name} color={calendar_group.color}/>
                 })}
             </div>

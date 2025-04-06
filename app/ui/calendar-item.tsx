@@ -27,10 +27,6 @@ export function CalendarItem(
     const initialTag = createRef<TagBlockElement>();
 
 
-    React.useEffect(() => {
-        console.log("initialTag: ", initialTag)
-    }, [initialTag])
-
     return (
         <div
             className={clsx(
