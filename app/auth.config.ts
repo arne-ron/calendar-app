@@ -9,7 +9,6 @@ export const authConfig = {
     },
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
-            console.log(auth)
             const isLoggedIn = !!auth?.user;
             // Defines which sites need to be authenticated TODO this will need some changing and research later
             const isOnCalendar = nextUrl.pathname.startsWith('/calendar');

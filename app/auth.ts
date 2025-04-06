@@ -6,6 +6,7 @@ import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import type { User } from '@/app/definitions';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import bcrypt from 'bcrypt';
 import postgres from 'postgres';
 
@@ -34,6 +35,7 @@ export const { auth, signIn, signOut } = NextAuth({
     providers: [
         Credentials({
             async authorize(credentials) {
+                console.log('---authorize called')
                 const parsedCredentials = z
                     .object({ email: z.string().email(), password: z.string().min(6) })
                     .safeParse(credentials);
