@@ -12,10 +12,13 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
  * Returns all events in the database that belong to the user currently logged in
  */
 export async function fetchEvents(): Promise<RowList<Event[]>> {
+    const user_id = await getCurrentUser().then((user) => user.id)
+
     try {
         return await sql<Event[]>`
             SELECT *
             FROM "calendar-entries"
+            WHERE user_id = ${user_id}
         `;
     } catch (error) {
         console.error('Database Error:', error);

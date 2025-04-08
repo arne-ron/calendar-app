@@ -1,9 +1,5 @@
-import Link from "next/link";
-import {CalendarItem} from "@/app/ui/calendar-item";
-import {fetchCalendars, fetchUserID} from "@/app/data";
 import {LogoutButton} from "@/app/ui/components/logout-button";
 import {ShowUser} from "@/app/ui/components/show-user";
-import {getSession} from "next-auth/react";
 import {CalendarStack} from "@/app/ui/calendar-stack";
 
 
