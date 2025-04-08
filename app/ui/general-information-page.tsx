@@ -1,6 +1,9 @@
 import Link from "next/link";
 import {CalendarItem} from "@/app/ui/calendar-item";
 import {fetchCalendars} from "@/app/data";
+import {LogoutButton} from "@/app/ui/components/logout-button";
+import {ShowUser} from "@/app/ui/components/show-user";
+
 
 export async function GeneralInformationPage() {
     const calendars = await fetchCalendars();
@@ -24,9 +27,14 @@ export async function GeneralInformationPage() {
                 {calendars.map((calendar_group, index) => {
                     return <CalendarItem key={index} name={calendar_group.name} color={calendar_group.color}/>
                 })}
+                <Link href={'/calendar/calendar/create'}
+                      className='flex bg-gray-100 hover:bg-gray-100/60 rounded-full w-12 text-gray-400 justify-center'
+                >
+                    +
+                </Link>
+                <LogoutButton className='mt-5'/>
+                <ShowUser />
             </div>
-            <Link href={'/calendar/calendar/create'}
-                  className='flex bg-gray-100 hover:bg-gray-100/60 rounded-full mx-2.5 w-12 text-gray-400 justify-center'>+</Link>
         </div>
     )
 }

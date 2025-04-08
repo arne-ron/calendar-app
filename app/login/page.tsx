@@ -14,8 +14,9 @@ export const metadata: Metadata = {
 export default function Page() {
 
     return (
-        <div className='w-full h-full flex items-center justify-center'>
+        <div className='w-full h-full flex flex-col items-center justify-center'>
             <LoginForm />
+            <p className='mt-3'>You need to log in to continue</p>
         </div>
     )
 }

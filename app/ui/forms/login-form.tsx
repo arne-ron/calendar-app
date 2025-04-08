@@ -41,15 +41,15 @@ export function LoginForm() {
                 Submit
             </button>
 
-            <div
-                className="flex h-8 items-end space-x-1"
-                aria-live="polite"
-                aria-atomic="true"
-            >
-                {errorMessage &&
+            {errorMessage &&
+                <div
+                    className="flex items-end space-x-1"
+                    aria-live="polite"
+                    aria-atomic="true"
+                >
                         <p className="text-sm text-red-500">{errorMessage}</p>
-                }
-            </div>
+                </div>
+            }
         </form>
     )
 }
