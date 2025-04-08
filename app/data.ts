@@ -1,9 +1,9 @@
 // ? Collection of functions that get run on other server side components
 import postgres, {RowList} from "postgres";
-import { Event, Calendar } from "@/app/definitions";
+import {Event, Calendar, User} from "@/app/definitions";
 
 
-// Shortcut to our PostgreSQL database
+/** Shortcut to our PostgreSQL database */
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 
@@ -51,19 +51,42 @@ export async function fetchEventById(id: string): Promise<Event> {
 
 
 /**
- * Returns all calendars in the database
+ * Returns all calendars in the database that belong to the given user
+ *
+ * @param user_id the id identifying the user
  */
-export async function fetchCalendars(): Promise<RowList<Calendar[]>> {
+export async function fetchCalendars(user_id: string): Promise<RowList<Calendar[]>> {
     try {
         return await sql<Calendar[]>`
             SELECT *
             FROM "calendar-groups"
+            WHERE user_id = ${user_id}
         `;
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch calendar groups.');
     }
 }
+
+
+/**
+ * Returns the user id associated with the given email
+ *
+ * @param email the email associated with that user
+ */
+export async function fetchUserID(email: string) {
+    try {
+        return await sql<User[]>`
+            SELECT *
+            FROM "users"
+            WHERE email = ${email}
+        `;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch user id.');
+    }
+}
+
 
 
 /**
