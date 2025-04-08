@@ -1,6 +1,7 @@
 // ? Collection of functions that get run on other server side components
 import postgres, {RowList} from "postgres";
 import {Event, Calendar, User} from "@/app/definitions";
+import {auth} from "@/app/auth";
 
 
 /** Shortcut to our PostgreSQL database */
@@ -8,7 +9,7 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 
 /**
- * Returns all events in the database
+ * Returns all events in the database that belong to the user currently logged in
  */
 export async function fetchEvents(): Promise<RowList<Event[]>> {
     try {
@@ -51,11 +52,11 @@ export async function fetchEventById(id: string): Promise<Event> {
 
 
 /**
- * Returns all calendars in the database that belong to the given user
- *
- * @param user_id the id identifying the user
+ * Returns all calendars in the database that belong to the user currently logged in
  */
-export async function fetchCalendars(user_id: string): Promise<RowList<Calendar[]>> {
+export async function fetchCalendars(): Promise<RowList<Calendar[]>> {
+    const user_id = await getCurrentUser().then((user) => user.id)
+
     try {
         return await sql<Calendar[]>`
             SELECT *
@@ -87,6 +88,20 @@ export async function fetchUserID(email: string) {
     }
 }
 
+
+/**
+ * Returns the user currently logged in
+ *
+ * This should only be called if in login-protected areas.
+ * If this needs to be called in unprotected sites in the future, this needs to be rewritten
+ */
+export async function getCurrentUser(): Promise<User> {
+    const session = await auth()
+    if (!(session?.user)) throw new Error("The user should be logged in at this point")
+    if (!(session.user.email)) throw new Error("The user should be have an email attached")
+    const user = await fetchUserID(session.user.email)
+    return user[0]
+}
 
 
 /**

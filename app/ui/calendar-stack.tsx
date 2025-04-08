@@ -1,15 +1,11 @@
-import {auth} from "@/app/auth";
-import {fetchCalendars, fetchUserID} from "@/app/data";
-import {CalendarItem} from "@/app/ui/calendar-item";
+import { fetchCalendars } from "@/app/data";
+import { CalendarItem } from "@/app/ui/calendar-item";
 import Link from "next/link";
-import {LogoutButton} from "@/app/ui/components/logout-button";
-import {ShowUser} from "@/app/ui/components/show-user";
 
 
 export async function CalendarStack() {
-    const session = await auth()
-    const user = await fetchUserID(session?.user?.email ?? '')
-    const calendars = await fetchCalendars(user[0].id)
+
+    const calendars = await fetchCalendars()
 
     return (
         <div className='flex flex-col m-2 gap-1 items-start'>
