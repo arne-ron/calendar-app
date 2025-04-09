@@ -71,9 +71,9 @@ export function CreateUserForm() {
                 <button type='submit' className='text-blue-500 hover:text-blue-700 rounded-full bg-gray-100/60 hover:bg-gray-100/80 px-1'>
                     Sign up
                 </button>
-                <p>{state.message}</p>
-                <p>{Object.entries(state.errors ?? {}).map(([key, vals]) => `${key}: ${vals} || `)}</p>
-            </div>
+                <p className='text-red-500'>{state.message}</p> {/*TODO this can be done way better */}
+                <p className='text-red-500'>{Object.entries(state.errors ?? {}).map(([key, vals]) => `${key}: ${vals} || `)}</p>
+            </div> {/* TODO make those forms a generic template with aria errors */}
         </form>
     )
 }

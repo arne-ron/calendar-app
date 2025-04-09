@@ -4,11 +4,12 @@
 
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
-import {EditEvent, EditCalendar, EditUser, User} from './definitions';
+import { EditEvent, EditCalendar, EditUser, User } from './definitions';
 import { redirect } from "next/navigation";
 import { signIn} from "@/app/auth";
 import { AuthError } from "next-auth";
-import {getCurrentUser} from "@/app/data";
+import { getCurrentUser } from "@/app/data";
+import { hash } from "bcrypt";
 
 
 /** Shortcut to our PostgreSQL database */
@@ -246,9 +247,7 @@ export async function createUser(prevState: UserFormState, formData: FormData): 
         };
     }
 
-
-    // const password = hash(password_unhashed)
-
+    const password_hashed: string = await hash(password, 13)
 
     try {
         const users = await sql<User[]>`
@@ -264,7 +263,7 @@ export async function createUser(prevState: UserFormState, formData: FormData): 
         }
         await sql`
             INSERT INTO "users" (name, email, password) /* id gets auto-generated */
-            VALUES (${name}, ${email}, ${password})
+            VALUES (${name}, ${email}, ${password_hashed})
         `
     } catch (error) {
         console.error(error)
