@@ -2,7 +2,7 @@
 'use client'
 
 
-import { editEvent, State } from "@/app/actions";
+import { editEvent, EventFormState } from "@/app/actions";
 import { Event, EditEvent } from "@/app/definitions";
 import { firstToUpper, mapZodToInputValueString, mapEventToDefaultValue } from "@/app/utils";
 import { useActionState } from "react";
@@ -11,7 +11,7 @@ import {DeleteEventForm} from "@/app/ui/forms/delete-event-form";
 
 
 export function EditEventForm({event}: {event: Event}) {
-    const initialState: State = { message: null, errors: {} }
+    const initialState: EventFormState = { message: null, errors: {} }
     const editEventId = editEvent.bind(null, event.id);
     const [state, formAction] = useActionState(editEventId, initialState)
     return (

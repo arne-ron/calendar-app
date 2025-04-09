@@ -4,11 +4,15 @@
 
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
-import { EditEvent } from './definitions';
+import { EditEvent, EditCalendar, EditUser, User } from './definitions';
 import { redirect } from "next/navigation";
+import { signIn} from "@/app/auth";
+import { AuthError } from "next-auth";
+import { getCurrentUser } from "@/app/data";
+import { hash } from "bcrypt";
 
 
-// Shortcut to our PostgreSQL database
+/** Shortcut to our PostgreSQL database */
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 
@@ -16,7 +20,7 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
  * Represents the state of a form for creating/editing events. <br>
  * Also contains errors to convey whether all necessary fields are filled correctly
  */
-export type State = {
+export type EventFormState = {
     errors?: {
         date?: string[];
         duration?: string[];
@@ -31,7 +35,9 @@ export type State = {
  * @param prevState the previous state to comply with `useActionState()`'s signature
  * @param formData the input object as to received by i.e. the `<CreateEventForm\>`
  */
-export async function createEvent(prevState: State, formData: FormData) {
+export async function createEvent(prevState: EventFormState, formData: FormData): Promise<EventFormState> {
+    const user_id = await  getCurrentUser().then((user) => user.id)
+
     // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
     const validatedFields = EditEvent.safeParse({
         title: formData.get('title'),
@@ -60,8 +66,8 @@ export async function createEvent(prevState: State, formData: FormData) {
     // Update the values in the database
     try {
         await sql`
-            INSERT INTO "calendar-entries" (title, date, location, duration, notes, link, tags) /* id gets auto-generated */
-            VALUES (${title}, ${date}, ${location}, ${durationSec}, ${notes}, ${link}, ${tags}) 
+            INSERT INTO "calendar-entries" (title, date, location, duration, notes, link, tags, user_id) /* id gets auto-generated */
+            VALUES (${title}, ${date}, ${location}, ${durationSec}, ${notes}, ${link}, ${tags}, ${user_id}) 
         `;
     } catch (error) {
         console.error(error);
@@ -79,7 +85,7 @@ export async function createEvent(prevState: State, formData: FormData) {
  * @param prevState the previous state to comply with `useActionState()`'s signature
  * @param formData the input object as to received by i.e. the `<EditEventForm\>`
  */
-export async function editEvent(id: number, prevState: State, formData: FormData) {
+export async function editEvent(id: number, prevState: EventFormState, formData: FormData) {
     // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
     const validatedFields = EditEvent.safeParse({
         title: formData.get('title'),
@@ -137,7 +143,7 @@ export async function deleteEvent(id: number) {
         return {
             errors: {date: undefined, message: undefined},
             message: `Something went wrong in deleting the event. Please try again. \n ${error}`,
-        } as State;
+        } as EventFormState;
     }
     console.log('events deleted successfully.');
 
@@ -146,3 +152,156 @@ export async function deleteEvent(id: number) {
 }
 
 
+/**
+ * Represents the state of a form for creating/editing calendars. <br>
+ * Also contains errors to convey whether all necessary fields are filled correctly
+ */
+export type CalendarFormState = {
+    errors?: object;
+    message?: string | null;
+}
+
+
+/**
+ * Function call to create a new calendar in the database
+ *
+ * @param prevState the previous state to comply with `useActionState()`'s signature
+ * @param formData the input object as to received by i.e. the `<CreateCalendarForm\>`
+ */
+export async function createCalendar(prevState: EventFormState, formData: FormData): Promise<CalendarFormState> {
+    const user_id = await  getCurrentUser().then((user) => user.id)
+
+    // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
+    const validatedFields = EditCalendar.safeParse({
+        name: formData.get('name'),
+        color: formData.get('color'),
+        tags: formData.get('tags'),
+    })
+    // Alternative: EditEvent.safePArse(Object.fromEntries(formData.entries()));
+
+    // Transmit the missing/incomplete fields up to the calling method over an object containing the errors and a message
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to create Calendar.',
+        };
+    }
+
+    // extract fields to variables
+    const { name, color, tags } = validatedFields.data;
+
+
+    // Update the values in the database
+    try {
+        await sql`
+            INSERT INTO "calendar-groups" (name, color, tags, user_id) /* id gets auto-generated */
+            VALUES (${name}, ${color}, ${tags}, ${user_id}) 
+        `;
+    } catch (error) {
+        console.error(error);
+    }
+
+    revalidatePath('/calendar');
+    redirect(`/calendar`);
+}
+
+
+/**
+ * Represents the state of a form for creating/editing events.
+ *
+ * Also contains errors to convey whether all necessary fields are filled correctly
+ */
+export type UserFormState = {
+    errors?: {
+        email?: string[];
+        password?: string[];
+        repeated_password?: string[];
+    };
+    message?: string | null;
+}
+
+
+export async function createUser(prevState: UserFormState, formData: FormData): Promise<UserFormState> {
+    const validatedFields = EditUser.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        repeat_password: formData.get('repeat_password'),
+    })
+
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to create User.',
+        };
+    }
+
+
+    const { name, email, password, repeat_password } = validatedFields.data
+
+    if (password !== repeat_password) {
+        return {
+            errors: {repeated_password: ['Passwords don\'t match up.']},
+            message: 'Passwords don\'t match up.',
+        };
+    }
+
+    const password_hashed: string = await hash(password, 13)
+
+    try {
+        const users = await sql<User[]>`
+            SELECT *
+            FROM users
+            WHERE email = ${email}
+        `
+        if (users.length !== 0) {
+            return {
+                errors: {email: ['This email already exists. Please log in or choose a different email']},
+                message: 'This email already exists. Please log in or choose a different email'
+            }
+        }
+        await sql`
+            INSERT INTO "users" (name, email, password) /* id gets auto-generated */
+            VALUES (${name}, ${email}, ${password_hashed})
+        `
+    } catch (error) {
+        console.error(error)
+    }
+
+
+    const credentials = {
+        email: email,
+        password: password,
+        redirect: true,
+        redirectTo: '/calendar',
+    }
+
+    return await signIn('credentials', credentials)
+}
+
+
+/**
+ * Authenticates the user login request
+ *
+ * @param prevState The previous state (unused – only to comply with function signature)
+ * @param formData The form data
+ */
+export async function authenticate(
+    prevState: string | undefined,
+    formData: FormData,
+) {
+    try {
+        await signIn('credentials', formData);
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return 'Invalid credentials.';
+                default:
+                    return 'Something went wrong.';
+            }
+        }
+        throw error;
+    }
+}
