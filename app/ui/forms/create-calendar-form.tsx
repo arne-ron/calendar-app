@@ -25,7 +25,7 @@ export function CreateCalendarForm() {
                 </div>
 
 
-                {/* Currently state is not used to show mistakes to the user but might be needed if
+                {/* Currently state is not used to show invalid input to the user but might be needed if
                 there's stuff that we need to enforce for calendar.
                  Then get inspiration from [create-event-form.tsx] */}
 

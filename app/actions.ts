@@ -4,14 +4,14 @@
 
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
-import { EditEvent, EditCalendar } from './definitions';
+import {EditEvent, EditCalendar, EditUser, User} from './definitions';
 import { redirect } from "next/navigation";
-import { signIn } from "@/app/auth";
+import { signIn} from "@/app/auth";
 import { AuthError } from "next-auth";
 import {getCurrentUser} from "@/app/data";
 
 
-// Shortcut to our PostgreSQL database
+/** Shortcut to our PostgreSQL database */
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 
@@ -34,7 +34,7 @@ export type EventFormState = {
  * @param prevState the previous state to comply with `useActionState()`'s signature
  * @param formData the input object as to received by i.e. the `<CreateEventForm\>`
  */
-export async function createEvent(prevState: EventFormState, formData: FormData) {
+export async function createEvent(prevState: EventFormState, formData: FormData): Promise<EventFormState> {
     const user_id = await  getCurrentUser().then((user) => user.id)
 
     // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
@@ -167,7 +167,7 @@ export type CalendarFormState = {
  * @param prevState the previous state to comply with `useActionState()`'s signature
  * @param formData the input object as to received by i.e. the `<CreateCalendarForm\>`
  */
-export async function createCalendar(prevState: EventFormState, formData: FormData) {
+export async function createCalendar(prevState: EventFormState, formData: FormData): Promise<CalendarFormState> {
     const user_id = await  getCurrentUser().then((user) => user.id)
 
     // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
@@ -202,6 +202,83 @@ export async function createCalendar(prevState: EventFormState, formData: FormDa
 
     revalidatePath('/calendar');
     redirect(`/calendar`);
+}
+
+
+/**
+ * Represents the state of a form for creating/editing events.
+ *
+ * Also contains errors to convey whether all necessary fields are filled correctly
+ */
+export type UserFormState = {
+    errors?: {
+        email?: string[];
+        password?: string[];
+        repeated_password?: string[];
+    };
+    message?: string | null;
+}
+
+
+export async function createUser(prevState: UserFormState, formData: FormData): Promise<UserFormState> {
+    const validatedFields = EditUser.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        repeat_password: formData.get('repeat_password'),
+    })
+
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to create User.',
+        };
+    }
+
+
+    const { name, email, password, repeat_password } = validatedFields.data
+
+    if (password !== repeat_password) {
+        return {
+            errors: {repeated_password: ['Passwords don\'t match up.']},
+            message: 'Passwords don\'t match up.',
+        };
+    }
+
+
+    // const password = hash(password_unhashed)
+
+
+    try {
+        const users = await sql<User[]>`
+            SELECT *
+            FROM users
+            WHERE email = ${email}
+        `
+        if (users.length !== 0) {
+            return {
+                errors: {email: ['This email already exists. Please log in or choose a different email']},
+                message: 'This email already exists. Please log in or choose a different email'
+            }
+        }
+        await sql`
+            INSERT INTO "users" (name, email, password) /* id gets auto-generated */
+            VALUES (${name}, ${email}, ${password})
+        `
+    } catch (error) {
+        console.error(error)
+    }
+
+
+    const credentials = {
+        email: email,
+        password: password,
+        redirect: true,
+        redirectTo: '/calendar',
+    }
+
+    return await signIn('credentials', credentials)
 }
 
 

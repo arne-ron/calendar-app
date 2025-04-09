@@ -74,7 +74,7 @@ export type Calendar = {
 }
 
 
-/** The Schema describing an calendar object */
+/** The Schema describing a calendar object */
 export const CalendarSchema = z.object({
     id: z.number(),
     name: z.string().nonempty({
@@ -104,3 +104,16 @@ export type User = {
     email: string;
     password: string;
 }
+
+
+/** The Schema describing a user */
+export const UserSchema = z.object({
+    id: z.string().uuid().nonempty(),
+    name: z.string().nonempty(),
+    email: z.string().email().nonempty(),
+    password: z.string().min(6),
+})
+
+
+/** A dependent schema of UserSchema that omits id and password */
+export const EditUser = UserSchema.omit({id: true}).extend({repeat_password: z.string().min(6).nonempty()})
