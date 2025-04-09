@@ -1,3 +1,5 @@
+import {VLine} from "@/app/ui/components/v-line";
+
 /**
  * Displays 24 vertical lines labeled with the hours 0:00 to 23:00
  */
@@ -10,7 +12,7 @@ export function TimeLines() {
             times.map((text: string, i: number) =>
                 <div className='flex flex-row items-start text-xs text-gray-500 gap-1' key={i}>
                     <p className='relative w-9 text-right -translate-y-1'>{(i != times.length - 1) ? text : null}</p>
-                    <div className='w-full bg-gray-500/20' style={{height: '1px'}}/>
+                    <VLine />
                 </div>
             )}
         </div>

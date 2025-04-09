@@ -74,3 +74,18 @@ export function getTimeInMillis(date: Date): number {
 export function clamp(x: number, min: number, max: number): number {
     return Math.max(min, Math.min(max, x));
 }
+
+
+export function getDaysFromMonth(month: number): number {
+    switch (month) {
+        case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+            return 31;
+        case 2:
+            return 28 // TODO Leap years...
+        case 4: case 6: case 9: case 11:
+            return 30
+        default:
+            throw new Error(`0 < month <= 12 but is ${month}`)
+    }
+
+}

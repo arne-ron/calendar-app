@@ -1,9 +1,9 @@
 import { DayViewSkeleton } from "@/app/ui/timeframes/day-view";
-import { DayView } from "@/app/ui/day-view";
+import { DayView } from "@/app/ui/timeframes/day-view";
 import { notFound } from "next/navigation";
 import { WeekView, WeekViewSkeleton } from "@/app/ui/timeframes/week-view";
-import { MonthViewSkeleton } from "@/app/ui/timeframes/month-view";
-import { YearViewSkeleton} from "@/app/ui/timeframes/year-view";
+import {MonthView, MonthViewSkeleton} from "@/app/ui/timeframes/month-view";
+import {YearView, YearViewSkeleton} from "@/app/ui/timeframes/year-view";
 import { Suspense } from "react";
 import { fetchEvents } from "@/app/data";
 import { Event } from "@/app/definitions";
@@ -23,7 +23,7 @@ export async function CalendarView({ view }: {view: string | undefined}) {
       <div className='flex h-full w-full'>
           {view === 'day' &&
               <Suspense fallback={<DayViewSkeleton/>}>
-                  <DayView title={"Tues"} events={[]}/>
+                  <DayView events={events}/>
               </Suspense>
           }
           {(view === 'week' || !view) &&
@@ -33,12 +33,12 @@ export async function CalendarView({ view }: {view: string | undefined}) {
           }
           {view === 'month' &&
               <Suspense fallback={<MonthViewSkeleton />} >
-                  <MonthViewSkeleton />
+                  <MonthView events={events} />
               </Suspense>
           }
           {view === 'year' &&
               <Suspense fallback={<YearViewSkeleton />} >
-                  <YearViewSkeleton />
+                  <YearView events={events}/>
               </Suspense>
           }
 

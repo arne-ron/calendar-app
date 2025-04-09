@@ -1,4 +1,7 @@
-export function YearView() {
+import {Event} from "@/app/definitions";
+
+
+export function YearView({ events }: { events: Event[] }) {
     return (
         <p>This is the year view</p>
     )

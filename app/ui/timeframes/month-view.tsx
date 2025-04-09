@@ -1,6 +1,44 @@
-export function MonthView() {
+import { getDaysFromMonth } from "@/app/utils";
+import { Event } from "@/app/definitions";
+import {VLine} from "@/app/ui/components/v-line";
+import {EventBlockMonth} from "@/app/ui/components/event-block-month";
+
+
+export function MonthView({ events }: { events: Event[] }) {
+    const month = 5;
+    const offset = 3;
+    const nr_days = getDaysFromMonth(month); // TODO leap years
+    const days = Array(nr_days).fill(0).map((_, i) => i +1);
+
+    // Can optimise this because/if events come sorted by day
+    const events_per_day: Event [][] = Array(nr_days).fill(0).map(() => new Array(0))
+
+    events.forEach((event) => {
+        events_per_day[event.date.getDate()].push(event);
+    })
+    // Sort events by start time ascending
+    events_per_day.forEach((events) => {events.sort((a: Event, b: Event) => b.date.valueOf() - a.date.valueOf())})
+
     return (
-        <p>This is the month view</p>
+        <div className='grid grid-cols-7 gap-x-2 gap-y-4 h-full w-full p-4'>
+            {Array(offset).fill(0).map((_, i) =>
+                <div key={'offset_' + i}/>, {/* Fill first x grid cells to have the right start day */}
+            )}
+            {days.map((day) =>
+                    <div key={day} className='flex flex-col gap-1'>
+                        <p className='self-center'>{day}</p>
+                        <VLine />
+                        {events_per_day[day-1].slice(0, 3).map((event, i) =>
+                            <EventBlockMonth event={event} key={`event_${day}_${i}`}/>,
+                        )}
+                        {events_per_day[day-1].length > 3 &&
+                            <p className='bg-red-500/10 rounded px-1 w-min'>...</p>
+                        }
+                    </div>
+            )
+
+            }
+        </div>
     )
 }
 
