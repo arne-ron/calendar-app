@@ -33,7 +33,7 @@ export async function YearView({ dateInfo }: { dateInfo: {day: number, monthInde
             <div className='grid grid-cols-4 gap-x-3 gap-y-3 h-full w-full mt-2'>
                 {months.flatMap((month, month_idx) => {
                     return (
-                        <Link href={`/calendar?view=month&month=${month}`} key={`month_${month}`} className='bg-gray-50/80 p-2 rounded-lg'>
+                        <Link href={`/calendar?view=month&month=${month_idx}`} key={`month_${month_idx}`} className='bg-gray-50/80 p-2 rounded-lg'>
                             <p className='mb-1'>{month}</p>
                             <div className='grid grid-cols-7 gap-1'>
                                 {...range(offsets[month_idx]).map((_, i) =>
