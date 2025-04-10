@@ -1,4 +1,4 @@
-import React, {forwardRef, ReactElement, useState} from "react";
+import React, {forwardRef, ReactElement, useImperativeHandle, useState} from "react";
 import {CreateTag} from "@/app/ui/components/create-tag";
 import {SimpleTagBlock} from "@/app/ui/components/simple-tag-block";
 import {ComplexTagBlock} from "@/app/ui/components/complex-tag-block";
@@ -12,7 +12,10 @@ export interface TagBlockProps {
     deleteFunc?: () => void
 }
 
-export type TagBlockElement = ReactElement<TagBlockProps>
+export type TagBlockElement = ReactElement<TagBlockProps> & {
+    getText: () => string,
+    getTags: () => {text: string, color?: string, tags: object[]}[]
+}
 
 /**
  * A nestable component to show a selection of tags.
@@ -32,12 +35,25 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
         children,
         deleteFunc,
     }: TagBlockProps,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ref
 ) {
     const [text, setText] = useState(initialText)
     const [simple, setSimple] = useState<boolean>(false)
     const [tags, setTags] = useState<{text: string, color: string | undefined, tags: object[] }[]>([]);
+
+
+    // @ts-expect-error I dont know how to make this happy with `key` and `type`
+    useImperativeHandle(ref, () => ({
+        getText: () => text,
+        getTags: () => tags,
+        props: {
+            initialText,
+            color,
+            children,
+            deleteFunc,
+        }
+    }));
+
 
 
     function initialize() {

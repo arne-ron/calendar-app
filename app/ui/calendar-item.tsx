@@ -5,6 +5,7 @@ import React, {createRef, useState} from "react";
 import {TagBlock, TagBlockElement} from "@/app/ui/components/tag-block";
 import clsx from "clsx";
 import {SaveCalendarButton} from "@/app/ui/components/save-calendar-button";
+import {Calendar} from "@/app/definitions";
 
 
 /**
@@ -14,11 +15,9 @@ import {SaveCalendarButton} from "@/app/ui/components/save-calendar-button";
  */
 export function CalendarItem(
     {
-        name = 'New Calendar',
-        color = '#22bb22'
+        calendar_group
     }: {
-        name?: string;
-        color?: string;
+        calendar_group: Calendar;
     }
 ) {
     const [selected, setSelected] = useState<boolean>(false);
@@ -39,7 +38,7 @@ export function CalendarItem(
                 {/* Colored selection rectangle */}
                 <button
                     className={'w-4 h-4 rounded-md border-2'}
-                    style={selected ? { backgroundColor: color, borderColor: color } : { borderColor: color }}
+                    style={selected ? { backgroundColor: calendar_group.color, borderColor: calendar_group.color } : { borderColor: calendar_group.color }}
                     onClick={() => setSelected(!selected)}
                 />
                 {/* Calendar name */}
@@ -50,13 +49,13 @@ export function CalendarItem(
                         setActive(!active);
                     }}
                 >
-                    {name}
+                    {calendar_group.name}
                 </button>
-                {active && <SaveCalendarButton initialTag={initialTag}/>}
+                {active && <SaveCalendarButton initialTag={initialTag} id={calendar_group.id}/>}
             </div>
             {/* Editing tags interface */}
             {active &&
-                <TagBlock ref={initialTag} initialText='empty' />
+                <TagBlock ref={initialTag} initialText='empty'/>
             }
         </div>
     )

@@ -13,7 +13,7 @@ export async function CalendarStack() {
         <div className='flex flex-col m-2 gap-1 items-start'>
             <button className='text-blue-600 hover:text-blue-800 hover:underline'>Select all</button>
             {calendars.map((calendar_group, index) => {
-                return <CalendarItem key={index} name={calendar_group.name} color={calendar_group.color}/>
+                return <CalendarItem key={index} calendar_group={calendar_group} />
             })}
             <Link href={'/calendar/calendar/create'}
                   className='flex bg-gray-100 hover:bg-gray-100/60 rounded-full w-12 text-gray-400 justify-center'

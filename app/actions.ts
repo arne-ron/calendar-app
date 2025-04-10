@@ -207,6 +207,27 @@ export async function createCalendar(prevState: EventFormState, formData: FormDa
 
 
 /**
+ * Updates the tags of the given calendar group
+ *
+ * @param id The id identifying the calendar group
+ * @param tags The new tags
+ */
+export async function updateCalendarGroup(id: string, tags: string) {
+    const user_id = await  getCurrentUser().then((user) => user.id)
+
+    try {
+        await sql`
+            UPDATE "calendar-groups"
+            SET tags = ${tags}
+            WHERE id = ${id} AND user_id = ${user_id}
+        `;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+/**
  * Represents the state of a form for creating/editing events.
  *
  * Also contains errors to convey whether all necessary fields are filled correctly

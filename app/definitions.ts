@@ -67,7 +67,7 @@ export const EditEvent = EventSchema.omit({ id: true, user_id: true })
 
 /** Describes a calendar entry as mirrored in the database (without the user) */ // TODO look at uuids here
 export type Calendar = {
-    id: number;
+    id: string;
     name: string;
     color: string;
     tags: string;

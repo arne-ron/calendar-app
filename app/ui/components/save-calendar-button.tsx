@@ -1,14 +1,28 @@
 import { RefObject} from "react";
 import {TagBlockElement} from "@/app/ui/components/tag-block";
+import {updateCalendarGroup} from "@/app/actions";
 
 
 export function SaveCalendarButton(
-    {initialTag}: {initialTag: RefObject<TagBlockElement | null>}
+    { initialTag, id, }: { initialTag: RefObject<TagBlockElement | null>, id: string }
 ) {
 
-    function textify() {
+    async function textify() {
         console.log("textify started")
         console.log("initialTag?.current: ", initialTag?.current)
+        console.log(initialTag?.current?.props.initialText)
+
+        if (!initialTag?.current) return
+
+        const curr: TagBlockElement = initialTag?.current
+        const obj = {
+            text: curr.getText(),
+            color: curr.props.color,
+            tags: curr.getTags()
+        }
+        const json = JSON.stringify(obj)
+        console.log(json)
+        await updateCalendarGroup(id, json)
     }
 
 
