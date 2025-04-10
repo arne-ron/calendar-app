@@ -20,24 +20,27 @@ export function MonthView({ events }: { events: Event[] }) {
     events_per_day.forEach((events) => {events.sort((a: Event, b: Event) => b.date.valueOf() - a.date.valueOf())})
 
     return (
-        <div className='grid grid-cols-7 gap-x-2 gap-y-4 h-full w-full p-4'>
-            {Array(offset).fill(null).map((_, i) =>
-                <div key={'offset_' + i}/>, {/* Fill first x grid cells to have the right start day */}
-            )}
-            {days.map((day) =>
-                    <div key={day} className='flex flex-col gap-1'>
-                        <p className='self-center'>{day}</p>
-                        <VLine />
-                        {events_per_day[day].slice(0, 3).map((event, i) =>
-                            <EventBlockMonth event={event} key={`event_${day}_${i}`}/>,
-                        )}
-                        {events_per_day[day].length > 3 &&
-                            <p className='bg-red-500/10 rounded px-1 w-min'>...</p>
-                        }
-                    </div>
-            )
-
-            }
+        <div className='flex flex-col p-4'>
+            <p className='text-xl self-center'>
+                May
+            </p>
+            <div className='grid grid-cols-7 gap-x-2 gap-y-4 h-full w-full mt-2'>
+                {Array(offset).fill(null).map((_, i) =>
+                    <div key={'offset_' + i}/>, {/* Fill first x grid cells to have the right start day */}
+                )}
+                {days.map((day) =>
+                        <div key={day} className='flex flex-col gap-1'>
+                            <p className='self-center'>{day}</p>
+                            <VLine />
+                            {events_per_day[day].slice(0, 3).map((event, i) =>
+                                <EventBlockMonth event={event} key={`event_${day}_${i}`}/>,
+                            )}
+                            {events_per_day[day].length > 3 &&
+                                <p className='bg-red-500/10 rounded px-1 w-min'>...</p>
+                            }
+                        </div>
+                )}
+            </div>
         </div>
     )
 }
@@ -57,10 +60,8 @@ export function MonthViewSkeleton() {
                         <div className={'bg-gray-200 rounded-2xl p-2 w-full grow'}>
                         </div>
                     </div>
-                )
-            })
-
-            }
+                )}
+            )}
         </div>
     )
 }

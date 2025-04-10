@@ -44,13 +44,10 @@ export function DayView({ events }: { events: Event[] }) {
 
     return (
         <div className='flex flex-col w-full p-3'> {/* H-Stack */}
-            <div className='h-2 w-9 shrink-0'></div> {/* Spacer for time numbers */}
-            {['Mon'].map((day, i) =>
-                <div key={day} className='flex flex-col items-center w-full'> {/* H-Stack Individual days */}
-                    <p>{day}</p>
-                    <p>{i}</p>
-                </div>
-            )}
+            <div className='flex flex-col items-center w-full py-2'> {/* H-Stack Individual days */}
+                <p>Mon</p>
+                <p>{0}</p>
+            </div>
 
             <div ref={ref} className='overflow-y-scroll no-scrollbar'> {/* Scroll and clip container */}
                 <div className={`w-full  ${!ready ? 'overflow-hidden invisible' : ' '}`} style={{height: `${2400 * scale}px`}}> {/* Scrolling base canvas and */}

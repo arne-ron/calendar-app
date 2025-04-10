@@ -15,28 +15,33 @@ export function YearView({ events }: { events: Event[]}) {
 
 
     return (
-        <div className='grid grid-cols-4 gap-x-3 gap-y-3 h-full w-full p-4'>
-            {months.flatMap((month, index) => {
-                return (
-                    <Link href={`/calendar?view=month&month=${month}`} key={`month_${month}`} className='bg-gray-50/80 p-2 rounded-lg'>
-                        <p className='font-bold mb-1'>{month}</p>
-                        <div className='grid grid-cols-7 gap-1'>
-                            {...range(offsets[index]).map((_, i) =>
-                                <div key={`offset_${i}`} />
-                            )}
-                            {range(getDaysFromMonth(index + 1)).map((day) =>
-                                <div
-                                    key={`month_${month}_${day}`}
-                                    className='flex flex-col bg-gray-200/50 rounded-lg items-center justify-center'
-                                >
-                                    <p className='text-sm'>{day + 1}</p>
-                                    <div className={clsx('rounded-full h-1.5 w-1.5 mb-1', (is_occupied[index][day]) ? 'bg-gray-400' : '')} />
-                                </div>
-                            )}
-                        </div>
-                    </Link>
-                )})
-            }
+        <div className='flex flex-col w-full p-4'>
+            <p className='text-xl'>
+                2025
+            </p>
+            <div className='grid grid-cols-4 gap-x-3 gap-y-3 h-full w-full mt-2'>
+                {months.flatMap((month, index) => {
+                    return (
+                        <Link href={`/calendar?view=month&month=${month}`} key={`month_${month}`} className='bg-gray-50/80 p-2 rounded-lg'>
+                            <p className='font-bold mb-1'>{month}</p>
+                            <div className='grid grid-cols-7 gap-1'>
+                                {...range(offsets[index]).map((_, i) =>
+                                    <div key={`offset_${i}`} />
+                                )}
+                                {range(getDaysFromMonth(index + 1)).map((day) =>
+                                    <div
+                                        key={`month_${month}_${day}`}
+                                        className='flex flex-col bg-gray-200/50 rounded-lg items-center justify-center'
+                                    >
+                                        <p className='text-sm'>{day + 1}</p>
+                                        <div className={clsx('rounded-full h-1.5 w-1.5 mb-1', (is_occupied[index][day]) ? 'bg-gray-400' : '')} />
+                                    </div>
+                                )}
+                            </div>
+                        </Link>
+                    )})
+                }
+            </div>
         </div>
     )
 }
