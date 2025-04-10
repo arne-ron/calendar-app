@@ -15,27 +15,26 @@ export function YearView({ events }: { events: Event[]}) {
 
 
     return (
-        <div className='grid grid-cols-4 gap-x-6 gap-y-4 h-full w-full p-4'>
+        <div className='grid grid-cols-4 gap-x-3 gap-y-3 h-full w-full p-4'>
             {months.flatMap((month, index) => {
                 return (
-                    <div key={`month_${month}`}>
-                        <p className='font-bold'>{month}</p>
+                    <Link href={`/calendar?view=month&month=${month}`} key={`month_${month}`} className='bg-gray-50/80 p-2 rounded-lg'>
+                        <p className='font-bold mb-1'>{month}</p>
                         <div className='grid grid-cols-7 gap-1'>
                             {...range(offsets[index]).map((_, i) =>
                                 <div key={`offset_${i}`} />
                             )}
                             {range(getDaysFromMonth(index + 1)).map((day) =>
-                                <Link
+                                <div
                                     key={`month_${month}_${day}`}
-                                    href={`/calendar?view=month&month=${month}`}
                                     className='flex flex-col bg-gray-200/50 rounded-lg items-center justify-center'
                                 >
-                                    <p>{day + 1}</p>
+                                    <p className='text-sm'>{day + 1}</p>
                                     <div className={clsx('rounded-full h-1.5 w-1.5 mb-1', (is_occupied[index][day]) ? 'bg-gray-400' : '')} />
-                                </Link>
+                                </div>
                             )}
                         </div>
-                    </div>
+                    </Link>
                 )})
             }
         </div>
