@@ -26,16 +26,21 @@ export async function WeekView({ dateInfo }: { dateInfo: {day: number, monthInde
     events.forEach((event) => {
         events_per_day[(event.date.getDay() + 6) % 7].push(event)
     })
+    const dates = range(7).map((idx) => {
+        const date = new Date(start)
+        date.setDate(start.getDate() + idx)
+        return date.getDate()
+    })
 
 
     return (
         <div className='flex flex-col w-full p-3'> {/* H-Stack */}
             <div className='flex flex-row w-full py-2'> {/* V-Stack Days */}
-                <div className='h-2 w-9 shrink-0'></div> {/* Spacer for time numbers */}
+                <div className='h-2 w-9 shrink-0' /> {/* Spacer for time numbers */}
                 {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) =>
                     <div key={day} className='flex flex-col items-center w-full'> {/* H-Stack Individual days */}
                         <p>{day}</p>
-                        <p>{i}</p>
+                        <p>{dates[i]}</p>
                     </div>
                 )}
             </div>

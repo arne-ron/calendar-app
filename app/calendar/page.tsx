@@ -19,8 +19,8 @@ export default async function Page(
     const searchParams = await props.searchParams
     const view = searchParams?.view
     const dateInfo = {
-        day: parseInt(searchParams?.day ?? '1'),
-        monthIndex: parseInt(searchParams?.month ?? '1'),
+        day: parseInt(searchParams?.day ?? new Date(Date.now()).getDate().toString()),
+        monthIndex: parseInt(searchParams?.month ?? new Date(Date.now()).getMonth().toString()),
         year: parseInt(searchParams?.year ?? new Date(Date.now()).getFullYear().toString())
     }
 

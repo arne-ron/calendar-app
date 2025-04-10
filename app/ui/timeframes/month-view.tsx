@@ -29,7 +29,7 @@ export async function MonthView({ dateInfo }: { dateInfo: {day: number, monthInd
     return (
         <div className='flex flex-col p-4 w-full'>
             <p className='text-xl self-center'>
-                May
+                {start.toLocaleString('en-GB', {month: 'long'})} {/* TODO take user preference for this */}
             </p>
             <div className='grid grid-cols-7 gap-x-2 gap-y-4 h-full w-full mt-2'>
                 {Array(offset).fill(null).map((_, i) =>

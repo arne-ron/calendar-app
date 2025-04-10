@@ -20,8 +20,11 @@ export async function DayView({ dateInfo }: { dateInfo: {day: number, monthIndex
     return (
         <div className='flex flex-col w-full p-3'> {/* H-Stack */}
             <div className='flex flex-col items-center w-full py-2'> {/* H-Stack Individual days */}
-                <p>Mon</p>
-                <p>{0}</p>
+
+                <p>
+                    {start.toLocaleString('en-GB', {weekday: 'long'})} {/* TODO take user preference for this */}
+                </p>
+                <p>{dateInfo.day}</p>
             </div>
 
             <ScrollBlockDay

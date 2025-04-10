@@ -28,7 +28,7 @@ export async function YearView({ dateInfo }: { dateInfo: {day: number, monthInde
     return (
         <div className='flex flex-col w-full p-4'>
             <p className='text-xl font-bold'>
-                2025
+                {start.toLocaleString('en-GB', {year: 'numeric'})} {/* TODO take user preference for this */}
             </p>
             <div className='grid grid-cols-4 gap-x-3 gap-y-3 h-full w-full mt-2'>
                 {months.flatMap((month, month_idx) => {
