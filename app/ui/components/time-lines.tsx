@@ -4,7 +4,7 @@ import {VLine} from "@/app/ui/components/v-line";
  * Displays 24 vertical lines labeled with the hours 0:00 to 23:00
  */
 export function TimeLines() {
-    const times: string[] = Array(25).fill(1).map((_, i) => i.toString() + ':00')
+    const times: string[] = Array(25).fill(null).map((_, i) => i.toString() + ':00')
 
     return (
         <div className='flex flex-col justify-between h-full pt-0.5'>

@@ -38,7 +38,7 @@ export function mapEventToDefaultValue(event: Event, field: string) {
     const val = event[field as keyof Event];
     switch (field) {
         case 'date':
-            return new Date(val as number).toISOString().slice(0, 10);
+            return new Date(val as unknown as number).toISOString().slice(0, 10);
         default:
             return val?.toString();
     }
@@ -76,6 +76,11 @@ export function clamp(x: number, min: number, max: number): number {
 }
 
 
+/**
+ * Given the month as 1 indexed number returns the number of days in that month
+ *
+ * @param month The month as 1 indexed number
+ */
 export function getDaysFromMonth(month: number): number {
     switch (month) {
         case 1: case 3: case 5: case 7: case 8: case 10: case 12:
@@ -88,4 +93,17 @@ export function getDaysFromMonth(month: number): number {
             throw new Error(`0 < month <= 12 but is ${month}`)
     }
 
+}
+
+
+/**
+ * Returns an Array consisting of the numbers in range [0 ... end - 1]
+ *
+ * @param end The end of the range (exclusive)
+ */
+export function range(end: number): number[] {
+    if (end < 0) throw new Error("end needs to be non-negative")
+
+
+    return Array(end).fill(null).map((_, index) => index)
 }

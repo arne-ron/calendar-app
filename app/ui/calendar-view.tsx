@@ -38,7 +38,7 @@ export async function CalendarView({ view }: {view: string | undefined}) {
           }
           {view === 'year' &&
               <Suspense fallback={<YearViewSkeleton />} >
-                  <YearView events={events}/>
+                  <YearView events={events} />
               </Suspense>
           }
 

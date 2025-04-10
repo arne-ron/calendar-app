@@ -3,7 +3,7 @@ import { TimeLines } from "@/app/ui/components/time-lines";
 import { EventStack } from "@/app/ui/event-stack";
 import { useEffect, useRef, useState } from "react";
 import { Event } from "@/app/definitions";
-import {clamp} from "@/app/utils";
+import {clamp, range} from "@/app/utils";
 
 
 /**
@@ -72,10 +72,7 @@ export function DayView({ events }: { events: Event[] }) {
 
 
 export function DayViewSkeleton() {
-    const arr = []
-    for (let i = 0; i < 9; i++) {
-        arr.push(i)
-    }
+    const arr = range(9)
 
     return (
         <div className='flex flex-col w-full h-full p-4 gap-1'>

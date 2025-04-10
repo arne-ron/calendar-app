@@ -1,22 +1,51 @@
-import {Event} from "@/app/definitions";
+import { Event } from "@/app/definitions";
+import { getDaysFromMonth, range } from "@/app/utils";
+import Link from "next/link";
+import clsx from "clsx";
 
 
-export function YearView({ events }: { events: Event[] }) {
+export function YearView({ events }: { events: Event[]}) {
+    const months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    const offsets: number[] = [1, 2, 2, 5, 1, 4, 6, 2, 5, 0, 3, 5]
+    const is_occupied: boolean[][] = range(12).map((month) => new Array(getDaysFromMonth(month+1)).fill(false))
+
+    events.forEach((event) => {
+        is_occupied[event.date.getMonth()][event.date.getDate() - 1] = true
+    })
+
+
     return (
-        <p>This is the year view</p>
+        <div className='grid grid-cols-4 gap-x-6 gap-y-4 h-full w-full p-4'>
+            {months.flatMap((month, index) => {
+                return (
+                    <div key={`month_${month}`}>
+                        <p className='font-bold'>{month}</p>
+                        <div className='grid grid-cols-7 gap-1'>
+                            {...range(offsets[index]).map((_, i) =>
+                                <div key={`offset_${i}`} />
+                            )}
+                            {range(getDaysFromMonth(index + 1)).map((day) =>
+                                <Link
+                                    key={`month_${month}_${day}`}
+                                    href={`/calendar?view=month&month=${month}`}
+                                    className='flex flex-col bg-gray-200/50 rounded-lg items-center justify-center'
+                                >
+                                    <p>{day + 1}</p>
+                                    <div className={clsx('rounded-full h-1.5 w-1.5 mb-1', (is_occupied[index][day]) ? 'bg-gray-400' : '')} />
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+                )})
+            }
+        </div>
     )
 }
 
 
 export function YearViewSkeleton() {
-    const days: number[] = []
-    for (let i = 0; i < 31; i++) {
-        days.push(i)
-    }
-    const months: number[] = []
-    for (let i = 0; i < 12; i++) {
-        months.push(i)
-    }
+    const days: number[] = range(31)
+    const months: number[] = range(12)
 
 
     return (

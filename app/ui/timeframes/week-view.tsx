@@ -3,7 +3,7 @@ import { TimeLines } from "@/app/ui/components/time-lines";
 import { EventStack } from "@/app/ui/event-stack";
 import { useEffect, useRef, useState } from "react";
 import { Event } from "@/app/definitions";
-import {clamp} from "@/app/utils";
+import {clamp, range} from "@/app/utils";
 
 
 /**
@@ -76,10 +76,7 @@ export function WeekView({events}: {events: Event[]}) {
 
 
 export function WeekViewSkeleton() {
-    const arr: number[] = []
-    for (let i = 1; i <= 4; i++) {
-        arr.push(i);
-    }
+    const arr: number[] = range(4)
 
 
     return (
