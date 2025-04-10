@@ -4,7 +4,7 @@
 import { deleteEvent } from "@/app/actions";
 
 
-export function DeleteEventForm({ id }: { id: number }) {
+export function DeleteEventForm({ id }: { id: string }) {
     const deleteEventId = deleteEvent.bind(null, id);
 
     return (
