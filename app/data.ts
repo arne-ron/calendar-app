@@ -33,11 +33,13 @@ export async function fetchEvents(): Promise<RowList<Event[]>> {
  * @param id the unique identifier for the event
  */
 export async function fetchEventById(id: string): Promise<Event> {
+    const user_id = await getCurrentUser().then((user) => user.id)
+
     try {
         const res = await sql<Event[]>`
             SELECT *
             FROM "calendar-entries"
-            WHERE id = ${id}
+            WHERE id = ${id} AND user_id = ${user_id}
         `;
 
         const parts = (res[0].duration as unknown as string).split(':').map(Number);
@@ -45,11 +47,36 @@ export async function fetchEventById(id: string): Promise<Event> {
 
         return {
             ...res[0],
-            duration: totalSeconds.toString()
+            duration: totalSeconds.toString() // TODO make this uniform with other fetch calls
         };
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch event.');
+    }
+}
+
+
+/**
+ * Returns all events belonging to the user in the given timeframe
+ *
+ * @param start The start date
+ * @param end The end date
+ */
+export async function fetchEventsBetween(start: Date, end: Date): Promise<RowList<Event[]>> {
+    const user_id = await getCurrentUser().then((user) => user.id)
+
+    try {
+        const res = await sql<Event[]>`
+            SELECT *
+            FROM "calendar-entries"
+            WHERE user_id = ${user_id}
+            AND date BETWEEN ${start.toISOString()} AND ${end.toISOString()} 
+        `;
+
+        return res;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch events.');
     }
 }
 

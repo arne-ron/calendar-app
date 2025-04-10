@@ -5,7 +5,7 @@ import { z } from "zod";
 
 /** Describes an event as mirrored in the database */
 export type Event = {
-    id: number;
+    id: string;
     title: string;
     date: Date;
     location?: string;
@@ -18,7 +18,7 @@ export type Event = {
 
 /** The Schema describing an event object */
 export const EventSchema = z.object({
-    id: z.number(),
+    id: z.string().uuid().nonempty(),
     title: z.string().trim().nonempty({
         message: "Title is required",
     }),

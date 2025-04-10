@@ -10,12 +10,19 @@ export default async function Page(
     props: {
         searchParams?: Promise<{
             view?: string
+            day?: string
+            month?: string
+            year?: string
         }>
     }
 ) {
     const searchParams = await props.searchParams
     const view = searchParams?.view
-
+    const dateInfo = {
+        day: parseInt(searchParams?.day ?? new Date(Date.now()).getDate().toString()),
+        monthIndex: parseInt(searchParams?.month ?? new Date(Date.now()).getMonth().toString()),
+        year: parseInt(searchParams?.year ?? new Date(Date.now()).getFullYear().toString())
+    }
 
     return (
         <div className='flex flex-row h-full bg-gray-100'>
@@ -32,7 +39,7 @@ export default async function Page(
                         <Searchbar />
                     </div>
                 </header>
-                <CalendarView view={view}/>
+                <CalendarView view={view} dateInfo={dateInfo}/>
             </main>
             <EventInfoSidebar />
         </div>

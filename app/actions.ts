@@ -85,7 +85,7 @@ export async function createEvent(prevState: EventFormState, formData: FormData)
  * @param prevState the previous state to comply with `useActionState()`'s signature
  * @param formData the input object as to received by i.e. the `<EditEventForm\>`
  */
-export async function editEvent(id: number, prevState: EventFormState, formData: FormData) {
+export async function editEvent(id: string, prevState: EventFormState, formData: FormData) {
     // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
     const validatedFields = EditEvent.safeParse({
         title: formData.get('title'),
@@ -131,7 +131,7 @@ export async function editEvent(id: number, prevState: EventFormState, formData:
  * Deletes an event from the database by its id
  * @param id uniquely references the event to be deleted
  */
-export async function deleteEvent(id: number) {
+export async function deleteEvent(id: string) {
     try {
         await sql`
             DELETE
