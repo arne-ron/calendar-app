@@ -3,11 +3,13 @@ import { CalendarItem } from "@/app/ui/calendar-item";
 import Link from "next/link";
 import { range } from "@/app/utils";
 import React from "react";
+import {Calendar} from "@/app/definitions";
 
 
 export async function CalendarStack() {
 
     const calendars = await fetchCalendars()
+    calendars.sort((a: Calendar, b: Calendar) => (a.name > b.name) ? 1 : -1 )
 
     return (
         <div className='flex flex-col m-2 gap-1 items-start'>

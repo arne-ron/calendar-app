@@ -18,6 +18,7 @@ export function ComplexTagBlock(
         remove_func: (name: string) => void
     }
 ) {
+    console.log("++", tags)
     return (<>
         {// Leading CreateKey
         tags.length == 0 && [
@@ -29,10 +30,12 @@ export function ComplexTagBlock(
         tags.flatMap((tag, i: number) => {
             console.log("+", JSON.stringify(tag))
             return [
-                i != 0 && <p key={text + '_' + i}>{text}</p>,
+                i != 0 && <button key={text + '_' + i} onClick={onClick}>{text}</button>,
                 <TagBlock
                     key={tag.text + '_' + i}
                     initialText={tag.text}
+                    color={tag.color ?? ''}
+                    initialTags={tag.tags as unknown as {text: string, color: string | undefined, tags: object[] }[]}
                     deleteFunc={remove_func.bind(null, tag.text)}
                 />
             ]

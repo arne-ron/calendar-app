@@ -6,6 +6,7 @@ import {TagBlock, TagBlockElement} from "@/app/ui/components/tag-block";
 import clsx from "clsx";
 import {SaveCalendarButton} from "@/app/ui/components/save-calendar-button";
 import {Calendar} from "@/app/definitions";
+import {updateCalendarGroup} from "@/app/actions";
 
 
 /**
@@ -24,6 +25,23 @@ export function CalendarItem(
     const [active, setActive] = useState<boolean>(false);
 
     const initialTag = createRef<TagBlockElement>();
+    const initial_tag_obj = JSON.parse(calendar_group.tags)
+
+
+    async function saveToDB() {
+        if (!initialTag?.current) return
+
+        const curr: TagBlockElement = initialTag?.current
+        const obj = {
+            text: curr.getText(),
+            color: curr.props.color,
+            tags: curr.getTags()
+        }
+        const json = JSON.stringify(obj)
+        await updateCalendarGroup(calendar_group.id, json)
+    }
+
+
 
 
     return (
@@ -55,7 +73,7 @@ export function CalendarItem(
             </div>
             {/* Editing tags interface */}
             {active &&
-                <TagBlock ref={initialTag} initialText='empty'/>
+                <TagBlock ref={initialTag} initialText={initial_tag_obj.text} color={initial_tag_obj.color} initialTags={initial_tag_obj.tags}/>
             }
         </div>
     )

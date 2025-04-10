@@ -7,7 +7,8 @@ import {ComplexTagBlock} from "@/app/ui/components/complex-tag-block";
 // maybe wants to 'extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>' in the future
 export interface TagBlockProps {
     initialText: string | 'or' | 'and' | 'empty',
-    color?: string,
+    initialTags: {text: string, color: string | undefined, tags: object[] }[],
+    color: string,
     children?: ReactElement<TagBlockProps>[] | ReactElement<TagBlockProps>,
     deleteFunc?: () => void
 }
@@ -31,16 +32,18 @@ export type TagBlockElement = ReactElement<TagBlockProps> & {
 export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagBlock(
     {
         initialText,
-        color = 'bg-green-500',
+        color,
+        initialTags,
         children,
         deleteFunc,
     }: TagBlockProps,
     ref
 ) {
-    const [text, setText] = useState(initialText)
-    const [simple, setSimple] = useState<boolean>(false)
-    const [tags, setTags] = useState<{text: string, color: string | undefined, tags: object[] }[]>([]);
+    const [text, setText] = useState<string>(initialText)
+    const [simple, setSimple] = useState<boolean>(true)
+    const [tags, setTags] = useState<{text: string, color: string | undefined, tags: object[] }[]>(initialTags);
 
+    console.log("--", tags)
 
     // @ts-expect-error I dont know how to make this happy with `key` and `type`
     useImperativeHandle(ref, () => ({
@@ -48,11 +51,13 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
         getTags: () => tags,
         props: {
             initialText,
+            initialTags,
             color,
             children,
             deleteFunc,
         }
     }));
+
 
 
 
@@ -77,10 +82,7 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
     // TODO still unsure whether duplicate elements are allowed.
     // TODO Inconsistencies on handling of duplicate elements
     const removeTag = (text: string) => {
-        console.log('Tags prev: ', tags)
         setTags((prevTags) => prevTags.filter((current) => current.text !== text));
-        console.log("tags removed: ", tags)
-        console.log(" ")
     }
 
 
@@ -127,7 +129,7 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
 
 
     // Resets this to the state of 'empty'
-    // TODO implement reset for complex blocks
+    // TODO implement reset for complex blocks and fix for simple ones
     function reset() {
         setText('empty');
         initialize();
@@ -144,6 +146,8 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
             reset();
         }
     }
+
+    console.log('createt tag block with: ', initialText, text, color, tags)
 
 
     return (

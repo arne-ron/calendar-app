@@ -7,11 +7,7 @@ export function SaveCalendarButton(
     { initialTag, id, }: { initialTag: RefObject<TagBlockElement | null>, id: string }
 ) {
 
-    async function textify() {
-        console.log("textify started")
-        console.log("initialTag?.current: ", initialTag?.current)
-        console.log(initialTag?.current?.props.initialText)
-
+    async function saveToDB() {
         if (!initialTag?.current) return
 
         const curr: TagBlockElement = initialTag?.current
@@ -21,7 +17,6 @@ export function SaveCalendarButton(
             tags: curr.getTags()
         }
         const json = JSON.stringify(obj)
-        console.log(json)
         await updateCalendarGroup(id, json)
     }
 
@@ -30,7 +25,7 @@ export function SaveCalendarButton(
     return (
         <button
             className='text-blue-600 text-xs rounded-full bg-gray-200 px-1 mr-2 outline active:text-blue-700 active:bg-gray-300'
-            onClick={textify}
+            onClick={saveToDB}
         >
             Save
         </button>
