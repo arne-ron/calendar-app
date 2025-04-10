@@ -1,13 +1,20 @@
-import {getDaysFromMonth, range} from "@/app/utils";
+import { range } from "@/app/utils";
 import { Event } from "@/app/definitions";
-import {VLine} from "@/app/ui/components/v-line";
-import {EventBlockMonth} from "@/app/ui/components/event-block-month";
+import { VLine } from "@/app/ui/components/v-line";
+import { EventBlockMonth } from "@/app/ui/components/event-block-month";
+import { fetchEventsBetween } from "@/app/data";
+import { getDaysInMonth } from "date-fns";
 
 
-export function MonthView({ events }: { events: Event[] }) {
-    const month = 5;
-    const offset = 3;
-    const nr_days = getDaysFromMonth(month); // TODO leap years
+export async function MonthView({ dateInfo }: { dateInfo: {day: number, monthIndex: number, year: number } }) {
+    const start = new Date(dateInfo.year, dateInfo.monthIndex, 1)
+    const end = new Date(dateInfo.year, dateInfo.monthIndex+1, 1)
+
+    const events: Event[] = await fetchEventsBetween(start, end);
+
+
+    const offset = (start.getDay() + 6) % 7;
+    const nr_days = getDaysInMonth(start);
     const days = range(nr_days);
 
     // Can optimise this because/if events come sorted by day
@@ -20,7 +27,7 @@ export function MonthView({ events }: { events: Event[] }) {
     events_per_day.forEach((events) => {events.sort((a: Event, b: Event) => b.date.valueOf() - a.date.valueOf())})
 
     return (
-        <div className='flex flex-col p-4'>
+        <div className='flex flex-col p-4 w-full'>
             <p className='text-xl self-center'>
                 May
             </p>

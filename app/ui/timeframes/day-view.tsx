@@ -1,9 +1,8 @@
-'use client'
-import { TimeLines } from "@/app/ui/components/time-lines";
-import { EventStack } from "@/app/ui/event-stack";
-import { useEffect, useRef, useState } from "react";
 import { Event } from "@/app/definitions";
-import {clamp, range} from "@/app/utils";
+import { range } from "@/app/utils";
+import { fetchEventsBetween } from "@/app/data";
+import {ScrollBlockDay} from "@/app/ui/components/scroll-block-day";
+
 
 
 /**
@@ -11,35 +10,11 @@ import {clamp, range} from "@/app/utils";
  *
  * @param events The events of the day to be displayed
  */
-export function DayView({ events }: { events: Event[] }) {
-    const [scale, setScale] = useState<number>(1.5); // Determines how much of the day gets shown
-    const [ready, setReady] = useState<boolean>(false); // Gets flagged once the content has been scrolled into view to toggle visibility
+export async function DayView({ dateInfo }: { dateInfo: {day: number, monthIndex: number, year: number } }) {
+    const start = new Date(dateInfo.year, dateInfo.monthIndex, dateInfo.day)
+    const end = new Date(dateInfo.year, dateInfo.monthIndex, dateInfo.day + 1)
 
-    // Ref to topmost div to attach listeners to
-    const ref = useRef<HTMLDivElement>(null);
-
-    const zoomSpeed: number = 0.006
-    const initialPos: number = 1500 - 1;
-
-
-    // Override zoom behaviour to zoom into timeline
-    useEffect(() => {
-            const node = ref.current;
-
-            const handleZoom = (e: WheelEvent) => {
-                if (!e.ctrlKey) return;
-                e.preventDefault();
-                setScale((old) => {return clamp(old - e.deltaY * zoomSpeed, 0.34, 2.5)});
-            }
-
-            node?.addEventListener('wheel', handleZoom, {passive: false})
-            if (ref.current) {
-                ref.current.scrollTop = initialPos;
-                setReady(true);
-            }
-            return () => node?.removeEventListener('wheel', handleZoom);
-        }, []
-    )
+    const events: Event[] = await fetchEventsBetween(start, end);
 
 
     return (
@@ -49,19 +24,11 @@ export function DayView({ events }: { events: Event[] }) {
                 <p>{0}</p>
             </div>
 
-            <div ref={ref} className='overflow-y-scroll no-scrollbar'> {/* Scroll and clip container */}
-                <div className={`w-full  ${!ready ? 'overflow-hidden invisible' : ' '}`} style={{height: `${2400 * scale}px`}}> {/* Scrolling base canvas and */}
-                    <div className='relative h-full flex flex-row gap-0.5 z-[1]'> {/* H-Stack Multiple days, positioning base*/}
-                        <div className='h-2 w-9 shrink-0'></div> {/* Spacer for time numbers */}
-                        {['Mon'].map((day) =>
-                            <EventStack key={day} scale={scale} events={events}/>
-                        )}
-                    </div>
-                    <div className='-translate-y-[100%] h-full'>
-                        <TimeLines/>
-                    </div>
-                </div>
-            </div>
+            <ScrollBlockDay
+                events={events}
+                height={2400}
+                initialPos={1500-1}
+            />
         </div>
     )
 

@@ -1,9 +1,8 @@
-"use client"
-import { TimeLines } from "@/app/ui/components/time-lines";
-import { EventStack } from "@/app/ui/event-stack";
-import { useEffect, useRef, useState } from "react";
 import { Event } from "@/app/definitions";
-import {clamp, range} from "@/app/utils";
+import {range} from "@/app/utils";
+import {endOfWeek, startOfWeek} from "date-fns";
+import {fetchEventsBetween} from "@/app/data";
+import {ScrollBlockWeek} from "@/app/ui/components/scroll-block-week";
 
 
 /**
@@ -11,38 +10,17 @@ import {clamp, range} from "@/app/utils";
  *
  * @param events The events of the week to be displayed
  */
-export function WeekView({events}: {events: Event[]}) {
+export async function WeekView({ dateInfo }: { dateInfo: {day: number, monthIndex: number, year: number } }) {
     // const today = 5 // TODO make today dynamic
     // TODO If I set the page zoom to more than 100% I can zoom out further than 24h
+    // TODO consider debouncing the request when switching the week/day
+    // TODO Lazy loading of next weeks/days events
+    // TODO Caching..?
 
-    const [scale, setScale] = useState<number>(1.5); // Determines how much of the day gets shown
-    const [ready, setReady] = useState<boolean>(false); // Gets flagged once the content has been scrolled into view to toggle visibility
+    const start = startOfWeek(new Date(dateInfo.year,dateInfo. monthIndex, dateInfo.day))
+    const end = endOfWeek(new Date(dateInfo.year, dateInfo.monthIndex, dateInfo.day))
 
-    // Ref to topmost div to attach listeners to
-    const ref = useRef<HTMLDivElement>(null);
-
-    const zoomSpeed: number = 0.006
-    const initialPos: number = 1500 - 1;
-
-
-    // Override zoom behaviour to zoom into timeline
-    useEffect(() => {
-            const node = ref.current;
-
-            const handleZoom = (e: WheelEvent) => {
-                if (!e.ctrlKey) return;
-                e.preventDefault();
-                setScale((old) => {return clamp(old - e.deltaY * zoomSpeed, 0.34, 2.5)});
-            }
-
-            node?.addEventListener('wheel', handleZoom, {passive: false})
-            if (ref.current) {
-                ref.current.scrollTop = initialPos;
-                setReady(true);
-            }
-            return () => node?.removeEventListener('wheel', handleZoom);
-        }, []
-    )
+    const events: Event[] = await fetchEventsBetween(start, end);
 
 
     return (
@@ -57,19 +35,7 @@ export function WeekView({events}: {events: Event[]}) {
                 )}
             </div>
 
-            <div ref={ref} className='overflow-y-scroll no-scrollbar'> {/* Scroll and clip container */}
-                <div className={`w-full  ${!ready ? 'overflow-hidden invisible' : ' '}`} style={{height: `${2400 * scale}px`}}> {/* Scrolling base canvas and */}
-                    <div className='relative h-full flex flex-row gap-0.5 z-[1]'> {/* H-Stack Multiple days, positioning base*/}
-                        <div className='h-2 w-9 shrink-0'></div> {/* Spacer for time numbers */}
-                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) =>
-                            <EventStack key={day} scale={scale} events={events}/>
-                        )}
-                    </div>
-                    <div className='-translate-y-[100%] h-full'>
-                        <TimeLines/>
-                    </div>
-                </div>
-            </div>
+            <ScrollBlockWeek events={events} height={2400} initialPos={1500-1}/>
         </div>
     )
 }
@@ -77,7 +43,6 @@ export function WeekView({events}: {events: Event[]}) {
 
 export function WeekViewSkeleton() {
     const arr: number[] = range(4)
-
 
     return (
         <div className='flex flex-row gap-1 w-full p-3'>
