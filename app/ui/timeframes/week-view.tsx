@@ -1,8 +1,8 @@
 import { Event } from "@/app/definitions";
 import {range} from "@/app/utils";
-import {endOfWeek, startOfWeek} from "date-fns";
-import {fetchEventsBetween} from "@/app/data";
-import {ScrollBlockWeek} from "@/app/ui/components/scroll-block-week";
+import { endOfWeek, startOfWeek } from "date-fns";
+import { fetchEventsBetween } from "@/app/data";
+import { ScrollBlockWeek } from "@/app/ui/components/scroll-block-week";
 
 
 /**
@@ -22,6 +22,11 @@ export async function WeekView({ dateInfo }: { dateInfo: {day: number, monthInde
 
     const events: Event[] = await fetchEventsBetween(start, end);
 
+    const events_per_day: Event[][] = range(7).map(() => new Array(0))
+    events.forEach((event) => {
+        events_per_day[(event.date.getDay() + 6) % 7].push(event)
+    })
+
 
     return (
         <div className='flex flex-col w-full p-3'> {/* H-Stack */}
@@ -35,7 +40,7 @@ export async function WeekView({ dateInfo }: { dateInfo: {day: number, monthInde
                 )}
             </div>
 
-            <ScrollBlockWeek events={events} height={2400} initialPos={1500-1}/>
+            <ScrollBlockWeek events_per_day={events_per_day} height={2400} initialPos={1500-1}/>
         </div>
     )
 }

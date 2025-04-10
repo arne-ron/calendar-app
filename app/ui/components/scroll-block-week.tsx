@@ -8,14 +8,14 @@ import {Event} from "@/app/definitions";
 
 export function ScrollBlockWeek(
     {
-        events,
+        events_per_day,
         height,
         initialPos,
         zoomSpeed = 0.06,
         minZoom = 2.5,
         maxZoom = 0.34,
     }: {
-        events: Event[]
+        events_per_day: Event[][]
         height: number,
         initialPos: number,
         zoomSpeed?: number,
@@ -55,8 +55,8 @@ export function ScrollBlockWeek(
             <div className={`w-full  ${!ready ? 'overflow-hidden invisible' : ' '}`} style={{height: `${height * scale}px`}}> {/* Scrolling base canvas and */}
                 <div className='relative h-full flex flex-row gap-0.5 z-[1]'> {/* H-Stack Multiple days, positioning base*/}
                     <div className='h-2 w-9 shrink-0'></div> {/* Spacer for time numbers */}
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) =>
-                        <EventStack key={day} scale={scale} events={events}/>
+                    {events_per_day.map((events, idx) =>
+                        <EventStack key={idx} scale={scale} events={events}/>
                     )}
                 </div>
                 <div className='-translate-y-[100%] h-full'>
