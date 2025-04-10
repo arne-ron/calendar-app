@@ -33,7 +33,7 @@ export function YearView({ events }: { events: Event[]}) {
                                         key={`month_${month}_${day}`}
                                         className='flex flex-col bg-gray-200/50 rounded-lg items-center justify-center'
                                     >
-                                        <p className='text-sm'>{day + 1}</p>
+                                        <p className='text-sm pt-[1px]'>{day + 1}</p>
                                         <div className={clsx('rounded-full h-1.5 w-1.5 mb-1', (is_occupied[index][day]) ? 'bg-gray-400' : '')} />
                                     </div>
                                 )}
