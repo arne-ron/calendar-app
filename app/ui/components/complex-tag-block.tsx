@@ -1,6 +1,7 @@
 import {CreateTag} from "@/app/ui/components/create-tag";
 import React from "react";
 import {TagBlock} from "@/app/ui/components/tag-block";
+import {hidden} from "next/dist/lib/picocolors";
 
 
 export function ComplexTagBlock(
@@ -9,15 +10,24 @@ export function ComplexTagBlock(
         text,
         onClick,
         add_func,
-        remove_func
+        remove_func,
+        onUpdate,
     }: {
         text: string,
         tags: {text: string, color: string | undefined, tags: object[] }[],
         onClick: () => void,
         add_func: (name: string) => void,
-        remove_func: (name: string) => void
+        remove_func: (name: string) => void,
+        onUpdate: () => void
     }
 ) {
+    React.useEffect(
+        () => onUpdate,
+        [text, tags, onClick]
+    )
+
+
+
     console.log("++", tags)
     return (<>
         {// Leading CreateKey
@@ -37,6 +47,7 @@ export function ComplexTagBlock(
                     color={tag.color ?? ''}
                     initialTags={tag.tags as unknown as {text: string, color: string | undefined, tags: object[] }[]}
                     deleteFunc={remove_func.bind(null, tag.text)}
+                    onUpdate={onUpdate}
                 />
             ]
         })}

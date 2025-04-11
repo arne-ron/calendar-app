@@ -1,10 +1,14 @@
 import React from "react";
 
 export function SimpleTagBlock(
-    {text, color, onClick}:
-    {text: string, color: string, onClick: () => void}
+    {text, color, onClick, onUpdate }:
+    {text: string, color: string, onClick: () => void, onUpdate: () => void }
 ) {
-    console.log('created simple block with: ', text, color)
+    React.useEffect(
+        () => onUpdate,
+        [text, color, onClick]
+    )
+
     return (
         <button
             key='simplbe_button'

@@ -6,16 +6,18 @@ import {ComplexTagBlock} from "@/app/ui/components/complex-tag-block";
 
 // maybe wants to 'extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>' in the future
 export interface TagBlockProps {
+    hidden?: boolean
     initialText: string | 'or' | 'and' | 'empty',
     initialTags: {text: string, color: string | undefined, tags: object[] }[],
     color: string,
     children?: ReactElement<TagBlockProps>[] | ReactElement<TagBlockProps>,
-    deleteFunc?: () => void
+    deleteFunc?: () => void,
+    onUpdate: () => void,
 }
 
 export type TagBlockElement = ReactElement<TagBlockProps> & {
     getText: () => string,
-    getTags: () => {text: string, color?: string, tags: object[]}[]
+    getTags: () => {text: string, color?: string, tags: object[]}[],
 }
 
 /**
@@ -31,11 +33,13 @@ export type TagBlockElement = ReactElement<TagBlockProps> & {
  */
 export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagBlock(
     {
+        hidden = false,
         initialText,
         color,
         initialTags,
         children,
         deleteFunc,
+        onUpdate,
     }: TagBlockProps,
     ref
 ) {
@@ -43,18 +47,19 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
     const [simple, setSimple] = useState<boolean>(true)
     const [tags, setTags] = useState<{text: string, color: string | undefined, tags: object[] }[]>(initialTags);
 
-    console.log("--", tags)
 
     // @ts-expect-error I dont know how to make this happy with `key` and `type`
     useImperativeHandle(ref, () => ({
         getText: () => text,
         getTags: () => tags,
         props: {
+            hidden,
             initialText,
             initialTags,
             color,
             children,
             deleteFunc,
+            onUpdate,
         }
     }));
 
@@ -75,6 +80,11 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
     }, [initialText]);
 
 
+    React.useEffect(
+        () => onUpdate,
+        [tags, text, color, children]
+    )
+
     const addTag = (text: string, color: string | undefined, tags: object[]) => {
         setTags((prevTags) => [...prevTags, {text: text, color: color, tags: tags}]);
     }
@@ -88,8 +98,7 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
 
     /**
      * Converts a `<TagBlock>` element into a suitable format for `setTags`.
-     *
-     * This also recursively happens to all children and throws a
+     * This also recursively happens to all children and throws an exception if a child is not a tag-block
      *
      * @param block the `<TagBlock>` to be converted
      *
@@ -129,7 +138,6 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
 
 
     // Resets this to the state of 'empty'
-    // TODO implement reset for complex blocks and fix for simple ones
     function reset() {
         setText('empty');
         initialize();
@@ -147,26 +155,26 @@ export const TagBlock = forwardRef<TagBlockElement, TagBlockProps>(function TagB
         }
     }
 
-    console.log('createt tag block with: ', initialText, text, color, tags)
-
 
     return (
         <div
+            style={hidden ? {display: 'none'} : {}}
             className={'flex flex-wrap flex-row gap-1 gap-y-1.5 rounded-2xl px-1.5 py-1 items-center w-fit bg-blue-400/20 text-sm'}
         >
             {text === 'empty' &&
-                <CreateTag onSubmit={setText}/>
+                <CreateTag onSubmit={(name) => {setText(name); addTag(name, '#ff00bb', [])}}/>
             }
             {simple &&
-                <SimpleTagBlock text={text} color={color} onClick={removeChildTag}/>
+                <SimpleTagBlock text={text} color={color} onClick={removeChildTag} onUpdate={onUpdate}/>
             }
             {!simple && text !== 'empty' &&
                 <ComplexTagBlock
                     text={text}
                     tags={tags}
                     onClick={removeChildTag}
-                    add_func={(name: string) => addTag(name, 'bg-green-500', [])}
+                    add_func={(name: string) => {addTag(name, '#33ff33', [])}}
                     remove_func={removeTag}
+                    onUpdate={onUpdate}
                 />
             }
         </div>

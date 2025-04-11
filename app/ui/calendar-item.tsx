@@ -1,10 +1,7 @@
 'use client'
-
-
-import React, {createRef, useState} from "react";
-import {TagBlock, TagBlockElement} from "@/app/ui/components/tag-block";
+import React, {createRef, ReactElement, useState} from "react";
+import {TagBlock, TagBlockElement, TagBlockProps} from "@/app/ui/components/tag-block";
 import clsx from "clsx";
-import {SaveCalendarButton} from "@/app/ui/components/save-calendar-button";
 import {Calendar} from "@/app/definitions";
 import {updateCalendarGroup} from "@/app/actions";
 
@@ -28,8 +25,11 @@ export function CalendarItem(
     const initial_tag_obj = JSON.parse(calendar_group.tags)
 
 
+    // TODO only works for up to one level of getting nested
     async function saveToDB() {
+        console.log('Update fn called')
         if (!initialTag?.current) return
+
 
         const curr: TagBlockElement = initialTag?.current
         const obj = {
@@ -37,10 +37,11 @@ export function CalendarItem(
             color: curr.props.color,
             tags: curr.getTags()
         }
+
         const json = JSON.stringify(obj)
+        console.log(json)
         await updateCalendarGroup(calendar_group.id, json)
     }
-
 
 
 
@@ -69,12 +70,60 @@ export function CalendarItem(
                 >
                     {calendar_group.name}
                 </button>
-                {active && <SaveCalendarButton initialTag={initialTag} id={calendar_group.id}/>}
             </div>
             {/* Editing tags interface */}
-            {active &&
-                <TagBlock ref={initialTag} initialText={initial_tag_obj.text} color={initial_tag_obj.color} initialTags={initial_tag_obj.tags}/>
-            }
+            <TagBlock
+                hidden={!active}
+                ref={initialTag}
+                initialText={initial_tag_obj.text}
+                color={initial_tag_obj.color}
+                initialTags={initial_tag_obj.tags}
+                onUpdate={saveToDB}
+            />
         </div>
     )
 }
+
+
+const a =
+{
+    "text": "and",
+    "color": "",
+    "tags": [
+        {
+            "text": "and",
+            "color": "",
+            "tags": []
+        },
+        {
+            "text": "and",
+            "color": "",
+            "tags": [
+                {
+                    "text": "and",
+                    "color": "",
+                    "tags": [
+                        {
+                            "text": "and",
+                            "color": "",
+                            "tags": [
+                                {
+                                    "text": "and",
+                                    "color": "",
+                                    "tags": [
+                                        {
+                                            "text": "test",
+                                            "color": "",
+                                            "tags": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
