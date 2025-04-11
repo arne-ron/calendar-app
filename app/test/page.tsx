@@ -9,7 +9,11 @@ import React, {useState} from "react";
  */
 export default function Page() {
     const [data, setData] = useState<data[]>([
-            {arr: []}
+            {
+                text: 'Initial Element',
+                color: 'rgba(187,255,153,0.4)',
+                arr: []
+            }
         ])
 
 

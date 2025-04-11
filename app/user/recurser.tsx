@@ -1,6 +1,8 @@
 import React from "react";
 
 export interface data {
+    text: string,
+    color: string,
     arr: data[]
 }
 
@@ -21,6 +23,17 @@ export function Recurser({ position, data, setData }: RecurserProps) {
         setData((prevData: data[]) => {
             const newData = [...prevData]; // Shallow copy of root array
 
+            if (position.length == 1 && position[0] == 0) {
+                if (count === 0) {
+                newData[0].arr = [
+                    ...newData[0].arr,
+                    { text: 'second layer', color: 'rgba(160,153,255,0.4)', arr: [] }
+                ]
+                }
+                count++;
+                return newData;
+            }
+
             // Navigate to the correct position
             let current = newData;
             for (let i = 0; i < position.length - 1; i++) {
@@ -31,7 +44,8 @@ export function Recurser({ position, data, setData }: RecurserProps) {
             const lastPos = position[position.length - 1];
             if (count == 0) {
                 current[lastPos] = {
-                    arr: [...current[lastPos].arr, { arr: [] }]
+                    ...current[lastPos],
+                    arr: [...current[lastPos].arr, { text: 'further layer', color: 'rgba(255,153,153,0.4)', arr: [] }]
                 };
                 console.log('3 is called');
             }
@@ -44,14 +58,17 @@ export function Recurser({ position, data, setData }: RecurserProps) {
     }
 
     // Find the current element to render
-    let current = data;
+    let arr = data;
+    let element;
     for (const pos of position) {
-        current = current[pos].arr;
+        element = arr[pos];
+        arr = element.arr;
     }
 
     return (
-        <div className='flex flex-row gap-3 bg-blue-400/10 min-w-16 min-h-10 px-3 py-3 rounded-lg h-min items-center'>
-            {current.map((_, i) => (
+        <div className='flex flex-row gap-3  min-w-16 min-h-10 px-3 py-3 rounded-lg h-min items-center' style={{backgroundColor: element?.color}}>
+            <p>{element?.text}</p>
+            {arr.map((_, i) => (
                 <Recurser key={i} position={[...position, i]} data={data} setData={setData} />
             ))}
             <button className='bg-white rounded-full w-6 h-6' onClick={addElem}>
