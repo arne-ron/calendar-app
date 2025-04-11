@@ -1,6 +1,6 @@
 'use client'
-import React, {createRef, ReactElement, useState} from "react";
-import {TagBlock, TagBlockElement, TagBlockProps} from "@/app/ui/components/tag-block";
+import React, {createRef, useState} from "react";
+import {TagBlock, TagBlockElement } from "@/app/ui/components/tag-block";
 import clsx from "clsx";
 import {Calendar} from "@/app/definitions";
 import {updateCalendarGroup} from "@/app/actions";
@@ -85,6 +85,8 @@ export function CalendarItem(
 }
 
 
+// TODO remove
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const a =
 {
     "text": "and",
