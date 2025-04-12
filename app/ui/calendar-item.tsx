@@ -21,24 +21,25 @@ export function CalendarItem(
     const [selected, setSelected] = useState<boolean>(false);
     const [active, setActive] = useState<boolean>(false);
 
-    const [data, setData] = useState<data[]>([
-        {
-            text: 'empty',
-            color: '',
-            arr: []
-        }
-    ])
 
-    async function saveData() {
-        console.log('saving data');
-        const json = JSON.stringify(data)
-        await updateCalendarGroup(calendar_group.id, json)
-    }
+    // Describes how data should look like for a calendar with no tags
+    const emptyData: data[] = [{ text: 'empty', color: '', arr: [] }]
+    let initialData: data[] = JSON.parse(calendar_group.tags)
+    if (initialData.length === 0) initialData = emptyData
+
+    const [data, setData] = useState<data[]>(initialData)
+
 
     // Save on changes
     React.useEffect(() => {
+        async function saveData() {
+            console.log('saving data');
+            let json = JSON.stringify(data)
+            if (json === JSON.stringify(emptyData)) json = '[]'
+            await updateCalendarGroup(calendar_group.id, json)
+        }
         saveData()
-    }, [data, saveData]
+    }, [data, emptyData]
     )
 
 
@@ -69,7 +70,9 @@ export function CalendarItem(
                 </button>
             </div>
             {/* Editing tags interface */}
-            <TagBlock position={[0]} data={data} setData={setData}/>
+            <div hidden={!active}>
+                <TagBlock position={[0]} data={data} setData={setData}/>
+            </div>
         </div>
     )
 }
