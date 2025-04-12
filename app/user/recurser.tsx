@@ -39,20 +39,8 @@ export function Recurser({ position, data, setData }: RecurserProps) {
 
 
     function addElem(name: string) {
-        let count = 0;
         setData((prevData: data[]) => {
-            const newData = [...prevData]; // Shallow copy of root array
-
-            if (position.length == 1 && position[0] == 0) {
-                if (count === 0) {
-                newData[0].arr = [
-                    ...newData[0].arr,
-                    { text: name, color: 'rgba(160,153,255,0.4)', arr: [] }
-                ]
-                }
-                count++;
-                return newData;
-            }
+            const newData = JSON.parse(JSON.stringify(prevData));
 
             // Navigate to the correct position
             let current = newData;
@@ -62,19 +50,13 @@ export function Recurser({ position, data, setData }: RecurserProps) {
 
             // Immutably update the specific array
             const lastPos = position[position.length - 1];
-            if (count == 0) {
-                current[lastPos] = {
-                    ...current[lastPos],
-                    arr: [...current[lastPos].arr, { text: name, color: 'rgba(255,153,153,0.4)', arr: [] }]
-                };
-                console.log('3 is called');
-            }
-            console.log('2 is called');
+            current[lastPos] = {
+                ...current[lastPos],
+                arr: [...current[lastPos].arr, { text: name, color: 'rgba(255,153,153,0.4)', arr: [] }]
+            };
 
-            count++;
             return newData;
         });
-        console.log('is called');
     }
 
 
