@@ -52,7 +52,7 @@ export function Recurser({ position, data, setData }: RecurserProps) {
             const lastPos = position[position.length - 1];
             current[lastPos] = {
                 ...current[lastPos],
-                arr: [...current[lastPos].arr, { text: name, color: 'rgba(255,153,153,0.4)', arr: [] }]
+                arr: [...current[lastPos].arr, { text: name, color: 'rgb(154,76,255)', arr: [] }]
             };
 
             return newData;
@@ -62,7 +62,10 @@ export function Recurser({ position, data, setData }: RecurserProps) {
 
 
     return (
-        <div className={(element.text === 'empty' && arr.length !== 0) ? 'flex-col' :'flex flex-row gap-3  min-w-16 min-h-10 px-3 py-3 rounded-lg h-min items-center'} style={{backgroundColor: (element.text === 'empty' && arr.length !== 0) ? undefined :  element?.color}}>
+        <div
+            className={(element.text === 'empty' && arr.length !== 0) ? 'flex-col' : 'flex flex-row gap-3  min-w-16 min-h-10 px-1.5 py-1 rounded-full h-min items-center'}
+            style={{backgroundColor: (element.text === 'empty' && arr.length !== 0) ? undefined : (simple) ? '#f3f3ff' : 'rgba(153,194,255,0.4)'}}
+        >
             {element.text === 'empty' && arr.length === 0 &&
                 <CreateTag onSubmit={addElem}/>
             }

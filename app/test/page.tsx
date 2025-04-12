@@ -11,7 +11,7 @@ export default function Page() {
     const [data, setData] = useState<data[]>([
             {
                 text: 'empty',
-                color: 'rgba(187,255,153,0.4)',
+                color: '',
                 arr: []
             }
         ])
