@@ -16,11 +16,10 @@ export interface RecurserProps {
     setData:  React.Dispatch<React.SetStateAction<data[]>>
 }
 
-// export type RecurserElement = ReactElement<RecurserProps> // & {function: () => void}
 
 
-export function Recurser({ position, data, setData }: RecurserProps) {
-    const [simple, setSimple] = useState<boolean>(true)
+export function TagBlock({ position, data, setData }: RecurserProps) {
+    const [type, setType] = useState<'simple' | 'complex' | 'empty'>('empty')
 
     // Find the current element to render
     let arr = data;
@@ -31,13 +30,14 @@ export function Recurser({ position, data, setData }: RecurserProps) {
     }
 
 
+    // Configure type
     React.useEffect(
-        () => setSimple(element.text !== 'and' && element.text !== 'or' && element.text !== 'empty'),
+        () => setType((element.text === 'empty') ? 'empty' : (element.text === 'and' || element.text === 'or') ? 'complex' : 'simple' ),
         [element.text]
     )
 
 
-
+    /** Calling this function adds a new data object (and therefore TagBlock) to the current TagBlock's data object in the `data` array */
     function addElem(name: string) {
         setData((prevData: data[]) => {
             const newData = JSON.parse(JSON.stringify(prevData));
@@ -60,37 +60,59 @@ export function Recurser({ position, data, setData }: RecurserProps) {
     }
 
 
+    /** Calling this function removes the current TagBlock's data object from the `data` array */
+    function removeSelf() {
+        setData((prevData: data[]) => {
+            const newData: data[] = JSON.parse(JSON.stringify(prevData));
+
+            // Navigate to the correct position
+            let parent: data;
+            let current: data[] = newData;
+            for (let i = 0; i < position.length - 1; i++) {
+                parent = current[position[i]]
+                current = parent.arr;
+            }
+
+            // Immutably update the specific array
+            const lastPos = position[position.length - 1];
+            parent!.arr = parent!.arr.filter((_, i) => i !== lastPos)
+
+            return newData;
+        });
+    }
+
 
     return (
         <div
-            className={(element.text === 'empty' && arr.length !== 0) ? 'flex-col' : 'flex flex-row gap-3  min-w-16 min-h-10 px-1.5 py-1 rounded-full h-min items-center'}
-            style={{backgroundColor: (element.text === 'empty' && arr.length !== 0) ? undefined : (simple) ? '#f3f3ff' : 'rgba(153,194,255,0.4)'}}
+            className={(element.text === 'empty' && arr.length !== 0) ? 'flex-col' : 'flex flex-row gap-3 px-2 py-1 rounded-full h-min items-center'}
+            style={{backgroundColor: (type === 'empty' && arr.length !== 0) ? undefined : (type === 'simple') ? '#f3f3ff' : 'rgba(153,194,255,0.4)'}}
         >
-            {element.text === 'empty' && arr.length === 0 &&
+            {type === "empty" && arr.length === 0 &&
                 <CreateTag onSubmit={addElem}/>
             }
-            {simple &&
+
+            {type === "simple" &&
                 <button
-                    key='simplbe_button'
-                    className={'flex flex-row gap-1 items-center'}
-                    onClick={() => console.log('remove the simple block (not yet implemented)')}
+                    key='simple_button'
+                    className={'flex flex-row gap-1 items-center mr-1'}
+                    onClick={removeSelf}
                 >
                     <div key='simple_color_swadge' className={`h-3 w-3 rounded-full ml-1`} style={{backgroundColor: element.color}}></div>
                     <p key='simple_text'>{element.text}</p>
                 </button>
             }
-            {!simple && element.text !== 'empty' && arr.length === 0 &&
+
+            {type === 'complex' && arr.length === 0 &&
                 // Leading CreateKey
                 <CreateTag key={'leading_createTag'} onSubmit={addElem}/>
             }
-            {!simple && element.text !== 'empty' && [
+            {type === 'complex' && [
                 // Mapping all tags, connected by text
                 arr.flatMap((tag, i: number) => {
-                    console.log("+", JSON.stringify(tag))
                     return [
                         i !== 0 &&
-                            <button key={'combiner' + element.text + '_' + i} onClick={() => console.log('remove the simple block (not yet implemented)')}>{element.text + 1 + "_" + i.toString()}</button>,
-                        <Recurser
+                            <button key={'combiner' + element.text + '_' + i} onClick={removeSelf}>{element.text}</button>,
+                        <TagBlock
                             key={'element' + tag.text + '_' + i}
                             position={[...position, i]}
                             data={data}
@@ -100,11 +122,11 @@ export function Recurser({ position, data, setData }: RecurserProps) {
                 }),
 
                 // always have trailing createTag
-                <button key={'trailing_text'} onClick={() => console.log('remove the complex block (not yet implemented)')}>{element.text + 2}</button>,
+                <button key={'trailing_text'} onClick={removeSelf}>{element.text}</button>,
                 <CreateTag key={'trailing_createTag'} onSubmit={addElem}/>
             ]}
-            {simple || element.text === 'empty' && arr.map((_, i) => (
-                <Recurser key={i} position={[...position, i]} data={data} setData={setData} />
+            {type === 'empty' && arr.map((_, i) => (
+                <TagBlock key={i} position={[...position, i]} data={data} setData={setData} />
             ))}
         </div>
     );

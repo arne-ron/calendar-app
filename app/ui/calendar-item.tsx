@@ -1,9 +1,9 @@
 'use client'
-import React, {createRef, useState} from "react";
-import {TagBlock, TagBlockElement } from "@/app/ui/components/tag-block";
+import React, { useState } from "react";
+import { TagBlock, data } from "@/app/ui/components/tag-block";
 import clsx from "clsx";
-import {Calendar} from "@/app/definitions";
-import {updateCalendarGroup} from "@/app/actions";
+import { Calendar } from "@/app/definitions";
+import { updateCalendarGroup } from "@/app/actions";
 
 
 /**
@@ -21,28 +21,25 @@ export function CalendarItem(
     const [selected, setSelected] = useState<boolean>(false);
     const [active, setActive] = useState<boolean>(false);
 
-    const initialTag = createRef<TagBlockElement>();
-    const initial_tag_obj = JSON.parse(calendar_group.tags)
-
-
-    // TODO only works for up to one level of getting nested
-    async function saveToDB() {
-        console.log('Update fn called')
-        if (!initialTag?.current) return
-
-
-        const curr: TagBlockElement = initialTag?.current
-        const obj = {
-            text: curr.getText(),
-            color: curr.props.color,
-            tags: curr.getTags()
+    const [data, setData] = useState<data[]>([
+        {
+            text: 'empty',
+            color: '',
+            arr: []
         }
+    ])
 
-        const json = JSON.stringify(obj)
-        console.log(json)
+    async function saveData() {
+        console.log('saving data');
+        const json = JSON.stringify(data)
         await updateCalendarGroup(calendar_group.id, json)
     }
 
+    // Save on changes
+    React.useEffect(() => {
+        saveData()
+    }, [data, saveData]
+    )
 
 
     return (
@@ -72,60 +69,8 @@ export function CalendarItem(
                 </button>
             </div>
             {/* Editing tags interface */}
-            <TagBlock
-                hidden={!active}
-                ref={initialTag}
-                initialText={initial_tag_obj.text}
-                color={initial_tag_obj.color}
-                initialTags={initial_tag_obj.tags}
-                onUpdate={saveToDB}
-            />
+            <TagBlock position={[0]} data={data} setData={setData}/>
         </div>
     )
-}
-
-
-// TODO remove
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const a =
-{
-    "text": "and",
-    "color": "",
-    "tags": [
-        {
-            "text": "and",
-            "color": "",
-            "tags": []
-        },
-        {
-            "text": "and",
-            "color": "",
-            "tags": [
-                {
-                    "text": "and",
-                    "color": "",
-                    "tags": [
-                        {
-                            "text": "and",
-                            "color": "",
-                            "tags": [
-                                {
-                                    "text": "and",
-                                    "color": "",
-                                    "tags": [
-                                        {
-                                            "text": "test",
-                                            "color": "",
-                                            "tags": []
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
 }
 
