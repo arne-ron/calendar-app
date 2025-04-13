@@ -21,8 +21,10 @@ export function GeneralInformationPage() {
             <Suspense fallback={<CalendarStackSkeleton/>}>
                 <CalendarStack />
             </Suspense>
-            <LogoutButton className='mt-5'/>
-            <ShowUser />
+            <div className='flex flex-col gap-1 mt-3 ml-2'>
+                <LogoutButton />
+                <ShowUser />
+            </div>
         </div>
     )
 }

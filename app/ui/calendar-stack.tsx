@@ -6,6 +6,9 @@ import React from "react";
 import {Calendar} from "@/app/definitions";
 
 
+/**
+ * Displays all the users calendars and the option to add more
+ */
 export async function CalendarStack() {
 
     const calendars = await fetchCalendars()

@@ -1,8 +1,12 @@
+'use client'
 import React, {useState} from "react";
-import {CreateTag} from "@/app/ui/components/create-tag";
+import {CreateButton} from "@/app/ui/components/create-button";
 import {TagBlockSimple} from "@/app/ui/components/tag-block-simple";
 
 
+/**
+ * Describes the form of the data that is used to construct the nested tag tree
+ */
 export interface data {
     text: string,
     color: string,
@@ -10,16 +14,28 @@ export interface data {
 }
 
 
-
-export interface RecurserProps {
+export interface TagBlockProps {
     position: number[],
     data: data[],
     setData:  React.Dispatch<React.SetStateAction<data[]>>
 }
 
 
-
-export function TagBlock({ position, data, setData }: RecurserProps) {
+/**
+ * This element displays the nested structure of data.
+ *
+ * This component is interactive and clicking on it removes the clicked element from the data structure.
+ * Also contains buttons to create new Tags
+ *
+ * For the initial element the `position` attribute should be `[0]`
+ *
+ * @param position The position of the current blocks information in `data`.
+ *                  the n-th entry resembles the data for this block being the n-th element in its parent's data's `arr` property.
+ *                  Equally, the (n-1)-th entry resembles the parent tag's position in its parent's data's `arr` property respectively.
+ * @param data The data describing the total tag structure
+ * @param setData A setter function for data
+ */
+export function TagBlock({ position, data, setData }: TagBlockProps) {
     const [type, setType] = useState<'simple' | 'complex' | 'empty'>('empty')
 
     // Find the current element to render
@@ -113,7 +129,7 @@ export function TagBlock({ position, data, setData }: RecurserProps) {
             style={{backgroundColor: (type === 'empty' && arr.length !== 0) ? undefined : (type === 'simple') ? '#f3f3ff' : 'rgba(149,190,255,0.33)'}}
         >
             {type === "empty" && arr.length === 0 &&
-                <CreateTag onSubmit={addElem}/>
+                <CreateButton onSubmit={addElem}/>
             }
             {type === 'empty' && arr.map((_, i) => (
                 <TagBlock key={i} position={[...position, i]} data={data} setData={setData} />
@@ -125,7 +141,7 @@ export function TagBlock({ position, data, setData }: RecurserProps) {
 
             {type === 'complex' && arr.length === 0 &&
                 // Leading CreateKey
-                <CreateTag key={'leading_createTag'} onSubmit={addElem}/>
+                <CreateButton key={'leading_createTag'} onSubmit={addElem}/>
             }
             {type === 'complex' && [
                 // Mapping all tags, connected by text
@@ -144,7 +160,7 @@ export function TagBlock({ position, data, setData }: RecurserProps) {
 
                 // always have trailing createTag
                 <button key={'trailing_text'} onClick={removeSelf}>{element.text}</button>,
-                <CreateTag key={'trailing_createTag'} onSubmit={addElem}/>
+                <CreateButton key={'trailing_createTag'} onSubmit={addElem}/>
             ]}
 
         </div>

@@ -1,14 +1,15 @@
 import {useState} from "react";
 
+
 /**
- * The CreateTag form for a `<TagBlock/>`
+ * The CreateButton form (i.e. for a `<TagBlock/>`)
  *
  * First exposes a (+) button and on click shows an input field.
  * Pressing the button again submits the form without a reload
  *
  * @param onSubmit the function called when submitting
  */
-export function CreateTag(
+export function CreateButton(
     {
         onSubmit
     }: {

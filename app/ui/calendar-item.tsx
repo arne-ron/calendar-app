@@ -7,9 +7,11 @@ import { updateCalendarGroup } from "@/app/actions";
 
 
 /**
- * The display item of one of the calendars.
+ * This component displays the given calendar and gives options to disable, expand and edit it.
  *
  * Clicking the color swatch enables the calendar, while clicking the name exposes the tag editing interface.
+ *
+ * @param calendar_group The calendar that should be displayed
  */
 export function CalendarItem(
     {
@@ -18,7 +20,9 @@ export function CalendarItem(
         calendar_group: Calendar;
     }
 ) {
+    /** State describing whether the calendar is currently displayed in the timeline view */
     const [selected, setSelected] = useState<boolean>(false);
+    /** State describing whether the calendar is currently expanded (i.e. cann be editet) */
     const [active, setActive] = useState<boolean>(false);
 
 
