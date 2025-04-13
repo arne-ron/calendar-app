@@ -1,4 +1,5 @@
-import {ReactNode, RefObject, useEffect} from "react";
+import {DetailedHTMLProps, HTMLAttributes, RefObject, useEffect} from "react";
+import clsx from "clsx";
 
 
 /**
@@ -18,26 +19,23 @@ import {ReactNode, RefObject, useEffect} from "react";
  * </div>
  * ```
  *
- *
- *
  * @param ref reference the popup for showing it
  * @param backdrop if `true`, clicking outside the popup closes it
- * @param className tailwind styling for the `<div>` containing the children
- * @param children the content of the popup
- * @constructor
+ * @param simple if `false` hides border and close button
  */
 export function Popup(
     {
         ref,
         backdrop = true,
+        simple = true,
         className,
-        children
+        children,
+        ...props
     }: {
         ref: RefObject<HTMLDialogElement | null>,
         backdrop?: boolean,
-        className?: string,
-        children?: ReactNode[]
-    }
+        simple?: boolean
+    } & DetailedHTMLProps<HTMLAttributes<HTMLDialogElement>, HTMLDialogElement>
 ) {
     // Adds event handler to detect clicks and closes the popup when clicked outside and backdrop is true
     useEffect(() => {
@@ -54,14 +52,21 @@ export function Popup(
     });
 
     return (
-        <dialog ref={ref}>
-            <div className='flex flex-col gap-1 rounded bg-gray-200 p-2'>
-                <div className={'rounded bg-white ' + className}>
-                    {children}
-                </div>
-                <button onClick={() => ref.current?.close()} className='rounded bg-gray-100 px-1'>Close</button>
+        <dialog ref={ref} {...props} className={clsx('absolute bg-transparent', className)}>
+            {simple &&
+                <div className='flex flex-col gap-1 rounded bg-gray-200 p-2'>
+                    <div className={'rounded bg-white ' + className}>
+                        {children}
+                    </div>
+                    <button onClick={() => ref.current?.close()} className='rounded bg-gray-100 px-1'>
+                        Close
+                    </button>
 
-            </div>
+                </div>
+            }
+            {!simple &&
+                children
+            }
         </dialog>
     )
 }

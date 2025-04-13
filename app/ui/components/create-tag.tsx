@@ -28,7 +28,7 @@ export function CreateTag(
                 setOpened(false);
                 e.currentTarget.reset()
             }}
-            className='flex bg-white/95 rounded-xl min-w-20 h-7 justify-center items-center'
+            className='flex bg-white/95 rounded-xl min-w-10 h-6 justify-center items-center'
         >
             {opened && [
                 <input
@@ -50,11 +50,11 @@ export function CreateTag(
             ]}
             {!opened &&
                 <button
-                    className='flex grow justify-center rounded-full'
+                    className='flex grow justify-center rounded-xl'
                     onClick={setOpened.bind(null, true)}
                     type='button'
                 >
-                    <p className='text-gray-400 text-xl'>+</p>
+                    <p className='text-gray-400 text-lg'>+</p>
                 </button>
             }
         </form>
