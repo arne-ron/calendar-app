@@ -1,6 +1,7 @@
 // TODO look at automatically getting these from an ORM
 
 import { z } from "zod";
+import exp from "node:constants";
 
 
 /** Describes an event as mirrored in the database */
@@ -100,9 +101,10 @@ export const EditCalendar = CalendarSchema.omit({ id: true, user_id: true })
 /** Describes a user as mirrored in the database */
 export type User = {
     id: string,
-    name: string;
-    email: string;
-    password: string;
+    name: string,
+    email: string,
+    password: string,
+    settings: Settings,
 }
 
 
@@ -117,3 +119,28 @@ export const UserSchema = z.object({
 
 /** A dependent schema of UserSchema that omits id and password */
 export const EditUser = UserSchema.omit({id: true}).extend({repeat_password: z.string().min(6).nonempty()})
+
+
+/**
+ * Preliminary definition of the settings
+ */
+export type Settings = SettingSection[]
+
+
+/**
+ * One section in the settings
+ */
+export type SettingSection = {
+    section_name: string,
+    options: SettingOption[]
+}
+
+
+/**
+ * A singular option in the settings
+ */
+export type SettingOption = {
+    name: string,
+    type: string,
+    value: string,
+}

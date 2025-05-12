@@ -1,3 +1,8 @@
+import {SettingsPage} from "@/app/ui/settings-page";
+import {SettingsProvider} from "@/settings-context";
+import {settingsDefault} from "@/settings-default";
+
+
 /**
  * Exposes an url for WIP and testing purposes
  *
@@ -5,9 +10,12 @@
  */
 export default function Page() {
     return (
-        <div className='flex items-center justify-center h-full'>
-            Nothing is being tested at the moment
-        </div>
+        <SettingsProvider initialSettings={settingsDefault}>
+
+            <div className='flex flex-col items-center justify-center h-full'>
+                <SettingsPage />
+            </div>
+        </SettingsProvider>
     )
 }
 

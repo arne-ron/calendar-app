@@ -1,14 +1,12 @@
 // ? Collection of functions that should get run on the server but are to be called from client side forms
 'use server'
-
-
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
-import { EditEvent, EditCalendar, EditUser, User } from './definitions';
+import {EditEvent, EditCalendar, EditUser, User, Settings} from './definitions';
 import { redirect } from "next/navigation";
 import { signIn} from "@/app/auth";
 import { AuthError } from "next-auth";
-import { getCurrentUser } from "@/app/data";
+import {getCurrentUserID, getSettings} from "@/app/data";
 import { hash } from "bcrypt";
 
 
@@ -36,7 +34,7 @@ export type EventFormState = {
  * @param formData the input object as to received by i.e. the `<CreateEventForm\>`
  */
 export async function createEvent(prevState: EventFormState, formData: FormData): Promise<EventFormState> {
-    const user_id = await  getCurrentUser().then((user) => user.id)
+    const user_id = await  getCurrentUserID()
 
     // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
     const validatedFields = EditEvent.safeParse({
@@ -169,7 +167,7 @@ export type CalendarFormState = {
  * @param formData the input object as to received by i.e. the `<CreateCalendarForm\>`
  */
 export async function createCalendar(prevState: EventFormState, formData: FormData): Promise<CalendarFormState> {
-    const user_id = await  getCurrentUser().then((user) => user.id)
+    const user_id = await getCurrentUserID()
 
     // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
     const validatedFields = EditCalendar.safeParse({
@@ -213,7 +211,7 @@ export async function createCalendar(prevState: EventFormState, formData: FormDa
  * @param tags The new tags
  */
 export async function updateCalendarGroup(id: string, tags: string) {
-    const user_id = await  getCurrentUser().then((user) => user.id)
+    const user_id = await getCurrentUserID()
 
     try {
         await sql`
@@ -242,6 +240,12 @@ export type UserFormState = {
 }
 
 
+/**
+ * Creates a new user with the given parameters
+ *
+ * @param prevState The previous state of the form
+ * @param formData The data to be used
+ */
 export async function createUser(prevState: UserFormState, formData: FormData): Promise<UserFormState> {
     const validatedFields = EditUser.safeParse({
         name: formData.get('name'),
@@ -300,6 +304,28 @@ export async function createUser(prevState: UserFormState, formData: FormData): 
 
     return await signIn('credentials', credentials)
 }
+
+
+/**
+ * Updates settings in db
+ */
+export async function updateSettings(settings: Settings) {
+    const user_id = await getCurrentUserID()
+    const settings_json = JSON.stringify(settings)
+
+    try {
+        await sql`
+            UPDATE users
+            SET settings = ${settings_json}
+            WHERE id = ${user_id}
+        `
+    } catch (e) {
+        console.error(e)
+        throw e
+    }
+}
+
+
 
 
 /**

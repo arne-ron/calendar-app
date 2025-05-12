@@ -2,6 +2,7 @@ import { LogoutButton } from "@/app/ui/components/logout-button";
 import { ShowUser } from "@/app/ui/components/show-user";
 import { CalendarStack, CalendarStackSkeleton } from "@/app/ui/calendar-stack";
 import { Suspense } from "react";
+import {SettingsPage} from "@/app/ui/settings-page";
 
 
 export function GeneralInformationPage() {
@@ -21,7 +22,8 @@ export function GeneralInformationPage() {
             <Suspense fallback={<CalendarStackSkeleton/>}>
                 <CalendarStack />
             </Suspense>
-            <div className='flex flex-col gap-1 mt-3 ml-2'>
+            <div className='flex flex-col gap-1 mt-3 mx-2'>
+                <SettingsPage />
                 <LogoutButton />
                 <ShowUser />
             </div>
