@@ -5,7 +5,9 @@
  */
 export default function Page() {
     return (
-        <p>Nothing is being tested atm</p>
+        <div className='flex items-center justify-center h-full'>
+            Nothing is being tested at the moment
+        </div>
     )
 }
 

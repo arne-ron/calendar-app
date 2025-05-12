@@ -1,30 +1,50 @@
 'use client'
-
-
-import React, {createRef, useState} from "react";
-import {TagBlock, TagBlockElement} from "@/app/ui/components/tag-block";
+import React, { useState } from "react";
+import { TagBlock, data } from "@/app/ui/components/tag-block";
 import clsx from "clsx";
-import {SaveCalendarButton} from "@/app/ui/components/save-calendar-button";
+import { Calendar } from "@/app/definitions";
+import { updateCalendarGroup } from "@/app/actions";
 
 
 /**
- * The display item of one of the calendars.
+ * This component displays the given calendar and gives options to disable, expand and edit it.
  *
  * Clicking the color swatch enables the calendar, while clicking the name exposes the tag editing interface.
+ *
+ * @param calendar_group The calendar that should be displayed
  */
 export function CalendarItem(
     {
-        name = 'New Calendar',
-        color = '#22bb22'
+        calendar_group
     }: {
-        name?: string;
-        color?: string;
+        calendar_group: Calendar;
     }
 ) {
+    /** State describing whether the calendar is currently displayed in the timeline view */
     const [selected, setSelected] = useState<boolean>(false);
+    /** State describing whether the calendar is currently expanded (i.e. cann be editet) */
     const [active, setActive] = useState<boolean>(false);
 
-    const initialTag = createRef<TagBlockElement>();
+
+    // Describes how data should look like for a calendar with no tags
+    const emptyData: data[] = [{ text: 'empty', color: '', arr: [] }]
+    let initialData: data[] = JSON.parse(calendar_group.tags)
+    if (initialData.length === 0) initialData = emptyData
+
+    const [data, setData] = useState<data[]>(initialData)
+
+
+    // Save on changes
+    React.useEffect(() => {
+        async function saveData() {
+            console.log('saving data');
+            let json = JSON.stringify(data)
+            if (json === JSON.stringify(emptyData)) json = '[]'
+            await updateCalendarGroup(calendar_group.id, json)
+        }
+        saveData()
+    }, [data, emptyData]
+    )
 
 
     return (
@@ -39,7 +59,7 @@ export function CalendarItem(
                 {/* Colored selection rectangle */}
                 <button
                     className={'w-4 h-4 rounded-md border-2'}
-                    style={selected ? { backgroundColor: color, borderColor: color } : { borderColor: color }}
+                    style={selected ? { backgroundColor: calendar_group.color, borderColor: calendar_group.color } : { borderColor: calendar_group.color }}
                     onClick={() => setSelected(!selected)}
                 />
                 {/* Calendar name */}
@@ -50,14 +70,14 @@ export function CalendarItem(
                         setActive(!active);
                     }}
                 >
-                    {name}
+                    {calendar_group.name}
                 </button>
-                {active && <SaveCalendarButton initialTag={initialTag}/>}
             </div>
             {/* Editing tags interface */}
-            {active &&
-                <TagBlock ref={initialTag} initialText='empty' />
-            }
+            <div hidden={!active}>
+                <TagBlock position={[0]} data={data} setData={setData}/>
+            </div>
         </div>
     )
 }
+

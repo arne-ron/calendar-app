@@ -1,9 +1,10 @@
-import {LogoutButton} from "@/app/ui/components/logout-button";
-import {ShowUser} from "@/app/ui/components/show-user";
-import {CalendarStack} from "@/app/ui/calendar-stack";
+import { LogoutButton } from "@/app/ui/components/logout-button";
+import { ShowUser } from "@/app/ui/components/show-user";
+import { CalendarStack, CalendarStackSkeleton } from "@/app/ui/calendar-stack";
+import { Suspense } from "react";
 
 
-export async function GeneralInformationPage() {
+export function GeneralInformationPage() {
     return (
         <div className='flex flex-col flex-shrink-0 w-80 h-full bg-gray-200'>
             {/* Tab Bar */}
@@ -17,9 +18,13 @@ export async function GeneralInformationPage() {
             </div>
             <div className='bg-gray-300 h-0.5'></div>
             {/* Calendars listed */}
-            <CalendarStack />
-            <LogoutButton className='mt-5'/>
-            <ShowUser />
+            <Suspense fallback={<CalendarStackSkeleton/>}>
+                <CalendarStack />
+            </Suspense>
+            <div className='flex flex-col gap-1 mt-3 ml-2'>
+                <LogoutButton />
+                <ShowUser />
+            </div>
         </div>
     )
 }
