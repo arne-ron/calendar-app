@@ -9,9 +9,11 @@
     "lint": "next-lint"
   },
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "bcrypt": "^5.1.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "googleapis": "^105.0.0",
     "next": "15.1.6",
     "next-auth": "5.0.0-beta.25",
     "pnpm": "^10.6.4",
