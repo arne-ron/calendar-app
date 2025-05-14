@@ -10,6 +10,7 @@ import { signIn} from "@/app/auth";
 import { AuthError } from "next-auth";
 import { getCurrentUser } from "@/app/data";
 import { hash } from "bcrypt";
+import {options} from "preact";
 
 
 /** Shortcut to our PostgreSQL database */
@@ -241,7 +242,6 @@ export type UserFormState = {
     message?: string | null;
 }
 
-
 export async function createUser(prevState: UserFormState, formData: FormData): Promise<UserFormState> {
     const validatedFields = EditUser.safeParse({
         name: formData.get('name'),
@@ -325,4 +325,11 @@ export async function authenticate(
         }
         throw error;
     }
+}
+
+export async function signInGoogle(
+    options?: FormData | ({redirectTo?: string, redirect?: true | undefined} & Record<string, any>) | undefined,
+    authorizationParams?: string[][] | Record<string, string> | string | URLSearchParams
+) {
+    await signIn('google', options, authorizationParams)
 }

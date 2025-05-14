@@ -37,7 +37,7 @@ export function LoginForm() {
             />
             <input type="hidden" name="redirectTo" value={callbackUrl} />
 
-            <button className='bg-blue-500 text-white rounded-lg px-1 text-md mt-2' aria-disabled={isPending}>
+            <button className='bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-1 text-md mt-2' aria-disabled={isPending}>
                 Submit
             </button>
 

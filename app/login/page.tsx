@@ -1,6 +1,7 @@
 import {Metadata} from "next";
 import {LoginForm} from "@/app/ui/forms/login-form";
-import {Suspense} from "react";
+import {GoogleLogin} from "@/app/ui/components/google-login";
+import {VLine} from "@/app/ui/components/v-line";
 
 
 export const metadata: Metadata = {
@@ -15,11 +16,15 @@ export const metadata: Metadata = {
 export default function Page() {
 
     return (
-        <div className='w-full h-full flex flex-col items-center justify-center'>
-            <Suspense fallback={<p>Loading...</p>}>
+        <div className='w-full h-full flex items-center justify-center'>
+            <div className='flex flex-col gap-1 items-center'>
+                <p className='text-xl font-bold mb-2'>Sign In</p>
                 <LoginForm />
-            </Suspense>
-            <p className='mt-3'>You need to log in to continue</p>
+                <p className=''>You need to log in to continue</p>
+                <VLine />
+                <p>or</p>
+                <GoogleLogin />
+            </div>
         </div>
     )
 }

@@ -107,11 +107,12 @@ export async function fetchCalendars(): Promise<RowList<Calendar[]>> {
  */
 export async function fetchUserID(email: string) {
     try {
-        return await sql<User[]>`
+        const users = await sql<User[]>`
             SELECT *
             FROM "users"
             WHERE email = ${email}
         `;
+        return users[0]
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch user id.');
@@ -127,11 +128,12 @@ export async function fetchUserID(email: string) {
  */
 export async function getCurrentUser(): Promise<User> {
     const session = await auth()
+    console.log(session)
     if (!(session?.user)) throw new Error("The user should be logged in at this point")
     if (!(session.user.email)) throw new Error("The user should be have an email attached")
-    const user = await fetchUserID(session.user.email)
-    return user[0]
+    return await fetchUserID(session.user.email)
 }
+
 
 
 /**
