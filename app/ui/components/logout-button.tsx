@@ -1,4 +1,4 @@
-import {signOut} from "@/app/auth";
+import {signOut} from "@/auth";
 import {ButtonHTMLAttributes} from "react";
 import clsx from "clsx";
 

@@ -4,13 +4,13 @@
 
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
-import { EditEvent, EditCalendar, EditUser, User } from './definitions';
+import { EditEvent, EditCalendar, EditUser, User, Event } from './definitions';
 import { redirect } from "next/navigation";
-import { signIn} from "@/app/auth";
+import { signIn} from "@/auth";
 import { AuthError } from "next-auth";
 import { getCurrentUser } from "@/app/data";
 import { hash } from "bcrypt";
-import {options} from "preact";
+
 
 
 /** Shortcut to our PostgreSQL database */
@@ -36,7 +36,7 @@ export type EventFormState = {
  * @param prevState the previous state to comply with `useActionState()`'s signature
  * @param formData the input object as to received by i.e. the `<CreateEventForm\>`
  */
-export async function createEvent(prevState: EventFormState, formData: FormData): Promise<EventFormState> {
+export async function createEventFromForm(prevState: EventFormState, formData: FormData): Promise<EventFormState> {
     const user_id = await  getCurrentUser().then((user) => user.id)
 
     // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
@@ -77,6 +77,34 @@ export async function createEvent(prevState: EventFormState, formData: FormData)
     revalidatePath('/calendar');
     redirect(`/calendar`);
 }
+export async function createEvent(event: Event) {
+    const user_id = await  getCurrentUser().then((user) => user.id)
+
+    // Validates and parses the inputs given via the form, and states the success of the parsing in the 'success' field
+    const validatedFields = EditEvent.safeParse(event)
+    // Alternative: EditEvent.safePArse(Object.fromEntries(formData.entries()));
+
+    if (!validatedFields.success) {
+        console.log("Insufficient fields to create event")
+        return
+    }
+
+    // extract fields to variables
+    const { title, date, location, duration, notes, link, tags } = validatedFields.data;
+
+    // Update the values in the database
+    try {
+        await sql`
+            INSERT INTO "calendar-entries" (title, date, location, duration, notes, link, tags, user_id) /* id gets auto-generated */
+            VALUES (${title}, ${date}, ${location}, ${duration}, ${notes}, ${link}, ${tags}, ${user_id}) 
+        `;
+    } catch (error) {
+        console.error(error);
+    }
+
+    revalidatePath('/calendar');
+}
+
 
 
 /**
@@ -228,6 +256,20 @@ export async function updateCalendarGroup(id: string, tags: string) {
 }
 
 
+export async function updateLastLoginTime(date: Date) {
+    try {
+        const curr = await getCurrentUser()
+        await sql`
+            UPDATE "users"
+            SET last_login=${date.toString()}
+            WHERE id = ${curr.id}
+        `
+    } catch (error) {
+        console.error("Failed to update last loginTime: ", error)
+    }
+}
+
+
 /**
  * Represents the state of a form for creating/editing events.
  *
@@ -241,6 +283,7 @@ export type UserFormState = {
     };
     message?: string | null;
 }
+
 
 export async function createUser(prevState: UserFormState, formData: FormData): Promise<UserFormState> {
     const validatedFields = EditUser.safeParse({

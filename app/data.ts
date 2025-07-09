@@ -1,7 +1,7 @@
 // ? Collection of functions that get run on other server side components
 import postgres, {RowList} from "postgres";
 import {Event, Calendar, User} from "@/app/definitions";
-import {auth} from "@/app/auth";
+import {auth} from "@/auth";
 
 
 /** Shortcut to our PostgreSQL database */
@@ -105,7 +105,7 @@ export async function fetchCalendars(): Promise<RowList<Calendar[]>> {
  *
  * @param email the email associated with that user
  */
-export async function fetchUserID(email: string) {
+export async function fetchUserByMail(email: string) {
     try {
         const users = await sql<User[]>`
             SELECT *
@@ -131,7 +131,14 @@ export async function getCurrentUser(): Promise<User> {
     console.log(session)
     if (!(session?.user)) throw new Error("The user should be logged in at this point")
     if (!(session.user.email)) throw new Error("The user should be have an email attached")
-    return await fetchUserID(session.user.email)
+    return await fetchUserByMail(session.user.email)
+}
+
+
+export async function getLastLoginTime(): Promise<Date | null> {
+    const user = await getCurrentUser()
+
+    return user.last_login ?? null;
 }
 
 
