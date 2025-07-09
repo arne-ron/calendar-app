@@ -2,6 +2,7 @@ import {Metadata} from "next";
 import {LoginForm} from "@/app/ui/forms/login-form";
 import {GoogleLogin} from "@/app/ui/components/google-login";
 import {VLine} from "@/app/ui/components/v-line";
+import {Suspense} from "react";
 
 
 export const metadata: Metadata = {
@@ -19,7 +20,9 @@ export default function Page() {
         <div className='w-full h-full flex items-center justify-center'>
             <div className='flex flex-col gap-1 items-center'>
                 <p className='text-xl font-bold mb-2'>Sign In</p>
-                <LoginForm />
+                <Suspense>
+                    <LoginForm/>
+                </Suspense>
                 <p className=''>You need to log in to continue</p>
                 <VLine />
                 <p>or</p>

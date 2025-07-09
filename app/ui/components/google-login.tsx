@@ -1,7 +1,6 @@
 'use client'
 import {signInGoogle} from "@/app/actions";
 import Image from "next/image";
-import {VLine} from "@/app/ui/components/v-line";
 
 
 export function GoogleLogin() {

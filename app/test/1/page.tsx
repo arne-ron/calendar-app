@@ -1,7 +1,7 @@
 import {cookies} from "next/headers";
 import oauth2Client from "@/app/utils/google-auth";
 import {calendar_v3, google} from "googleapis";
-import Schema$Events = calendar_v3.Schema$Events;
+import Schema$Event = calendar_v3.Schema$Event;
 
 export default async function Page() {
     const cookieStore = await cookies();
@@ -38,7 +38,7 @@ export default async function Page() {
         <div>
             <h1>My calendar entries</h1>
             <div className={'flex-col'}>
-                {events?.map((e: Schema$Events) => <p>{e.start.date}</p>)}
+                {events?.map((e: Schema$Event, i: number) => <p key={i}>{e.start?.date}</p>)}
             </div>
         </div>
     )

@@ -371,7 +371,7 @@ export async function authenticate(
 }
 
 export async function signInGoogle(
-    options?: FormData | ({redirectTo?: string, redirect?: true | undefined} & Record<string, any>) | undefined,
+    options?: FormData | ({redirectTo?: string, redirect?: true | undefined} & Record<string, unknown>) | undefined,
     authorizationParams?: string[][] | Record<string, string> | string | URLSearchParams
 ) {
     await signIn('google', options, authorizationParams)

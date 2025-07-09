@@ -43,7 +43,7 @@ export function CalendarItem(
             await updateCalendarGroup(calendar_group.id, json)
         }
         saveData()
-    }, [data, emptyData]
+    }, [data, calendar_group]
     )
 
 

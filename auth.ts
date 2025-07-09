@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 import {authConfig} from "@/app/auth.config";
 import Credentials from "next-auth/providers/credentials";
 import {z} from "zod";
-import bcrypt from "bcrypt";
+import {compare} from "bcrypt";
 import GoogleProvider from "next-auth/providers/google";
 import postgres from "postgres";
 import type {User} from "@/app/definitions";
@@ -43,7 +43,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                     const { email, password } = parsedCredentials.data;
                     const user = await getUser(email);
                     if (!user) return null;
-                    const passwordsMatch = await bcrypt.compare(password, user.password);
+                    const passwordsMatch = await compare(password, user.password);
 
                     if (passwordsMatch) return user;
                 }
