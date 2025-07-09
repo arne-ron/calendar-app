@@ -15,7 +15,7 @@
     "date-fns": "^4.1.0",
     "googleapis": "^105.0.0",
     "next": "15.1.6",
-    "next-auth": "5.0.0-beta.25",
+    "next-auth": "5.0.0-beta.29",
     "pnpm": "^10.6.4",
     "postgres": "^3.4.5",
     "react": "^19.0.0",

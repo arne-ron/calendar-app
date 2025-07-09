@@ -1,14 +1,11 @@
-// This utilizes NextAuth to handle user authentication
-// Based on https://nextjs.org/learn/dashboard-app
-
-import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google'
-import { authConfig } from './auth.config';
-import { z } from 'zod';
-import type { User } from '@/app/definitions';
-import bcrypt from 'bcrypt';
-import postgres from 'postgres';
+import NextAuth from "next-auth"
+import {authConfig} from "@/app/auth.config";
+import Credentials from "next-auth/providers/credentials";
+import {z} from "zod";
+import bcrypt from "bcrypt";
+import GoogleProvider from "next-auth/providers/google";
+import postgres from "postgres";
+import type {User} from "@/app/definitions";
 
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
@@ -30,7 +27,9 @@ async function getUser(email: string): Promise<User | undefined> {
 }
 
 
-export const { auth, handlers: { GET, POST }, signIn, signOut } = NextAuth({
+
+
+export const { auth, handlers, signIn, signOut } = NextAuth({
     ...authConfig,
     providers: [
         Credentials({
@@ -57,4 +56,4 @@ export const { auth, handlers: { GET, POST }, signIn, signOut } = NextAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         })
     ],
-});
+})
