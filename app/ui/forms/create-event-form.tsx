@@ -1,7 +1,7 @@
 'use client'
 
 
-import { createEvent, EventFormState} from "@/app/actions";
+import { createEventFromForm, EventFormState} from "@/app/actions";
 import { useActionState } from "react";
 import { EditEvent } from "@/app/definitions";
 import {firstToUpper, mapZodToInputValueString} from "@/app/utils";
@@ -11,7 +11,7 @@ import Link from "next/link";
 // Element that handles and displays inputs for creating a new event
 export function CreateEventForm() {
     const initialState: EventFormState = { message: null, errors: {} }
-    const [state, formAction] = useActionState(createEvent, initialState)
+    const [state, formAction] = useActionState(createEventFromForm, initialState)
     return (
         <form action={formAction} className='flex flex-col gap-2 rounded bg-gray-100 p-2.5'>
             {Object.entries(EditEvent._def.shape()).map(([field, type]) => {
