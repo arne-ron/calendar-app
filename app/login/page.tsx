@@ -21,12 +21,12 @@ export default function Page() {
             <div className='flex flex-col gap-1 items-center'>
                 <p className='text-xl font-bold mb-2'>Sign In</p>
                 <Suspense>
-                    <LoginForm/>
+                    <LoginForm redirectTo={"/calendar"}/>
                 </Suspense>
-                <p className=''>You need to log in to continue</p>
+                <p>You need to log in to continue</p>
                 <VLine />
                 <p>or</p>
-                <GoogleLogin />
+                <GoogleLogin redirectTo={"/calendar"}/>
             </div>
         </div>
     )

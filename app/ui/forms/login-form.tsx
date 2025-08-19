@@ -4,13 +4,13 @@ import {useActionState} from "react";
 import {authenticate} from "@/app/actions";
 
 
-export function LoginForm() {
+export function LoginForm({redirectTo}: {redirectTo: string}) {
     const [errorMessage, formAction, isPending] = useActionState(
         authenticate,
         undefined,
     );
     const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/calendar';
+    const callbackUrl = searchParams.get('callbackUrl') || redirectTo;
 
 
     return (

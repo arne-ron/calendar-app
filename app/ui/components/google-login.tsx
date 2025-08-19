@@ -3,10 +3,10 @@ import {signInGoogle} from "@/app/actions";
 import Image from "next/image";
 
 
-export function GoogleLogin() {
+export function GoogleLogin({redirectTo}: {redirectTo: string}) {
 
     return (
-        <form action={() => signInGoogle({redirectTo: "/calendar"})}>
+        <form action={() => signInGoogle({redirectTo})}>
             <button className='flex flex-row justify-between items-center gap-1 bg-gray-100 hover:bg-gray-200 rounded px-2 py-1'>
                 <p>Continue with Google</p>
                 <Image

@@ -55,6 +55,17 @@ export function parseDurationFromString(value: string): number {
     return ret_val
 }
 
+export function parseDurationToString(value: number): string {
+    // TODO Implement this for durations longer than a day
+    const hours = value / (60 * 60 * 100)
+    let rem = value % (60 * 60 * 100)
+    const minutes = rem / (60 * 1000)
+    rem = rem % (60 * 1000)
+    const seconds = rem / (1000)
+
+    return hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0")
+}
+
 
 export function getTimeInMillis(date: Date): number {
     return date.getHours() * 3600000

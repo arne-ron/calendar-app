@@ -8,7 +8,7 @@ import { EditEvent, EditCalendar, EditUser, User, Event } from './definitions';
 import { redirect } from "next/navigation";
 import { signIn} from "@/auth";
 import { AuthError } from "next-auth";
-import { getCurrentUser } from "@/app/data";
+import { getCurrentUser} from "@/app/data";
 import { hash } from "bcrypt";
 
 
@@ -356,6 +356,7 @@ export async function authenticate(
     formData: FormData,
 ) {
     try {
+        console.log("signing in")
         await signIn('credentials', formData);
     } catch (error) {
         if (error instanceof AuthError) {
@@ -376,3 +377,28 @@ export async function signInGoogle(
 ) {
     await signIn('google', options, authorizationParams)
 }
+export async function signInGoogleCalendar(
+    options?: FormData | ({redirectTo?: string, redirect?: true | undefined} & Record<string, unknown>) | undefined,
+    authorizationParams?: string[][] | Record<string, string> | string | URLSearchParams
+) {
+    await signIn('google-connection', options, authorizationParams)
+}
+
+
+export async function storeRefreshToken(token: string, id: string): Promise<void>  {
+    try {
+        // @ts-expect-error idk why
+        await sql`
+            UPDATE "users"
+            SET google_data=google_data || ${ {refresh_token: token} }::jsonb
+            WHERE id=${id}
+        `
+        return
+    } catch (e) {
+        throw e
+    }
+}
+
+// export async function isSignedInWithGoogle(): Promise<boolean> {
+//     return cookies().then(c => c.has("google_access_token"))
+// }

@@ -1,5 +1,5 @@
 import {cookies} from "next/headers";
-import oauth2Client from "@/app/utils/google-auth";
+import googleClient from "@/app/utils/google-auth";
 import {calendar_v3, google} from "googleapis";
 import Schema$Event = calendar_v3.Schema$Event;
 
@@ -7,18 +7,16 @@ export default async function Page() {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get('google_access_token')?.value
 
-    oauth2Client.setCredentials({access_token: accessToken})
+    googleClient.setCredentials({access_token: accessToken})
 
     let events;
 
     const calendar = google.calendar('v3')
 
 
-
-
     try {
         const request = {
-            auth: oauth2Client,
+            auth: googleClient,
             calendarId: 'primary',
             showDeleted: false,
             singleEvents: true,

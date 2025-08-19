@@ -104,7 +104,8 @@ export type User = {
     email: string;
     password: string;
     source: "credentials" | "google";
-    last_login: Date
+    last_login: Date,
+    google_data: any,
 }
 
 

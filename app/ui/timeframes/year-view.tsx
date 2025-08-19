@@ -26,11 +26,11 @@ export async function YearView({ dateInfo }: { dateInfo: {day: number, monthInde
     // TODO consider doing a fetchEventsYear that reduces data (i.e. SELECT date FROM instead of SELECT * FROM)
 
     return (
-        <div className='flex flex-col w-full p-4'>
+        <div className='flex flex-col w-full p-4 overflow-y-auto no-scrollbar'>
             <p className='text-xl font-bold'>
                 {start.toLocaleString('en-GB', {year: 'numeric'})} {/* TODO take user preference for this */}
             </p>
-            <div className='grid grid-cols-4 gap-x-3 gap-y-3 h-full w-full mt-2'>
+            <div className='grid grid-cols-4 gap-x-3 gap-y-3 w-full mt-2'>
                 {months.flatMap((month, month_idx) => {
                     return (
                         <Link href={`/calendar?view=month&month=${month_idx}`} key={`month_${month_idx}`} className='bg-gray-50/80 p-2 rounded-lg'>
